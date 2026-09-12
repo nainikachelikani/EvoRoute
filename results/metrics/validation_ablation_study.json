@@ -1,0 +1,503 @@
+{
+  "ablation_study_split": "val",
+  "selection_metric": "Lexicographic(Macro F1, Balanced Accuracy, Overall Accuracy)",
+  "metric_tolerance": 0.0001,
+  "anti_collapse_thresholds": {
+    "min_newest_class_accuracy": 0.6,
+    "min_old_class_accuracy": 0.4,
+    "max_forgetting_increase": 0.05
+  },
+  "baseline_val_metrics": {
+    "split": "val",
+    "loss": 1.5055246353149414,
+    "overall_accuracy": 0.64625,
+    "balanced_accuracy": 0.64625,
+    "macro_f1": 0.6587369974395724,
+    "per_class_accuracy": {
+      "Books": 0.445,
+      "Clothing & Accessories": 0.7,
+      "Electronics": 0.455,
+      "Household": 0.985
+    },
+    "recency_metrics": {
+      "overall_accuracy": 0.64625,
+      "balanced_accuracy": 0.64625,
+      "macro_f1": 0.6587369974395724,
+      "macro_precision": 0.8371314153275279,
+      "macro_recall": 0.64625,
+      "recency_bias": 0.34125000000000005,
+      "newest_prediction_rate": 0.59125,
+      "newest_true_rate": 0.25,
+      "newest_class_accuracy": 0.985,
+      "old_class_accuracy": 0.5333333333333333,
+      "accuracy_gap": 0.45166666666666666,
+      "absolute_imbalance": 0.45166666666666666,
+      "normalized_entropy": 0.8053606292910451,
+      "raw_entropy": 1.6107212585820903,
+      "predicted_distribution": {
+        "Books": 0.11625,
+        "Clothing & Accessories": 0.1775,
+        "Electronics": 0.115,
+        "Household": 0.59125
+      },
+      "true_distribution": {
+        "Books": 0.25,
+        "Clothing & Accessories": 0.25,
+        "Electronics": 0.25,
+        "Household": 0.25
+      },
+      "per_class_bias": {
+        "Books": -0.13374999999999998,
+        "Clothing & Accessories": -0.07250000000000001,
+        "Electronics": -0.135,
+        "Household": 0.34125000000000005
+      },
+      "per_class_accuracy": {
+        "Books": 0.445,
+        "Clothing & Accessories": 0.7,
+        "Electronics": 0.455,
+        "Household": 0.985
+      },
+      "newest_class_name": "Household",
+      "num_seen_classes": 4,
+      "total_samples": 800
+    },
+    "lexicographic_tuple": [
+      0.6587369974395724,
+      0.64625,
+      0.64625
+    ],
+    "total_samples": 800
+  },
+  "candidates": {
+    "baseline_replay_ewc": {
+      "name": "Replay + EWC (Baseline)",
+      "replay_strategy": "original",
+      "finetuning": false,
+      "metrics": {
+        "split": "val",
+        "loss": 1.5055246353149414,
+        "overall_accuracy": 0.64625,
+        "balanced_accuracy": 0.64625,
+        "macro_f1": 0.6587369974395724,
+        "per_class_accuracy": {
+          "Books": 0.445,
+          "Clothing & Accessories": 0.7,
+          "Electronics": 0.455,
+          "Household": 0.985
+        },
+        "recency_metrics": {
+          "overall_accuracy": 0.64625,
+          "balanced_accuracy": 0.64625,
+          "macro_f1": 0.6587369974395724,
+          "macro_precision": 0.8371314153275279,
+          "macro_recall": 0.64625,
+          "recency_bias": 0.34125000000000005,
+          "newest_prediction_rate": 0.59125,
+          "newest_true_rate": 0.25,
+          "newest_class_accuracy": 0.985,
+          "old_class_accuracy": 0.5333333333333333,
+          "accuracy_gap": 0.45166666666666666,
+          "absolute_imbalance": 0.45166666666666666,
+          "normalized_entropy": 0.8053606292910451,
+          "raw_entropy": 1.6107212585820903,
+          "predicted_distribution": {
+            "Books": 0.11625,
+            "Clothing & Accessories": 0.1775,
+            "Electronics": 0.115,
+            "Household": 0.59125
+          },
+          "true_distribution": {
+            "Books": 0.25,
+            "Clothing & Accessories": 0.25,
+            "Electronics": 0.25,
+            "Household": 0.25
+          },
+          "per_class_bias": {
+            "Books": -0.13374999999999998,
+            "Clothing & Accessories": -0.07250000000000001,
+            "Electronics": -0.135,
+            "Household": 0.34125000000000005
+          },
+          "per_class_accuracy": {
+            "Books": 0.445,
+            "Clothing & Accessories": 0.7,
+            "Electronics": 0.455,
+            "Household": 0.985
+          },
+          "newest_class_name": "Household",
+          "num_seen_classes": 4,
+          "total_samples": 800
+        },
+        "lexicographic_tuple": [
+          0.6587369974395724,
+          0.64625,
+          0.64625
+        ],
+        "total_samples": 800
+      },
+      "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_ewc_final.pt",
+      "lexicographic_tuple": [
+        0.6587369974395724,
+        0.64625,
+        0.64625
+      ]
+    },
+    "candidate_50_50": {
+      "name": "EvoRoute-BR (50/50 Replay)",
+      "replay_strategy": "50_50",
+      "finetuning": false,
+      "metrics": {
+        "split": "val",
+        "loss": 1.4970824718475342,
+        "overall_accuracy": 0.67625,
+        "balanced_accuracy": 0.67625,
+        "macro_f1": 0.6902874194303866,
+        "per_class_accuracy": {
+          "Books": 0.52,
+          "Clothing & Accessories": 0.72,
+          "Electronics": 0.485,
+          "Household": 0.98
+        },
+        "recency_metrics": {
+          "overall_accuracy": 0.67625,
+          "balanced_accuracy": 0.67625,
+          "macro_f1": 0.6902874194303866,
+          "macro_precision": 0.8399224183590094,
+          "macro_recall": 0.67625,
+          "recency_bias": 0.3075,
+          "newest_prediction_rate": 0.5575,
+          "newest_true_rate": 0.25,
+          "newest_class_accuracy": 0.98,
+          "old_class_accuracy": 0.5750000000000001,
+          "accuracy_gap": 0.4049999999999999,
+          "absolute_imbalance": 0.4049999999999999,
+          "normalized_entropy": 0.8413317587910365,
+          "raw_entropy": 1.682663517582073,
+          "predicted_distribution": {
+            "Books": 0.13625,
+            "Clothing & Accessories": 0.1825,
+            "Electronics": 0.12375,
+            "Household": 0.5575
+          },
+          "true_distribution": {
+            "Books": 0.25,
+            "Clothing & Accessories": 0.25,
+            "Electronics": 0.25,
+            "Household": 0.25
+          },
+          "per_class_bias": {
+            "Books": -0.11374999999999999,
+            "Clothing & Accessories": -0.0675,
+            "Electronics": -0.12625,
+            "Household": 0.3075
+          },
+          "per_class_accuracy": {
+            "Books": 0.52,
+            "Clothing & Accessories": 0.72,
+            "Electronics": 0.485,
+            "Household": 0.98
+          },
+          "newest_class_name": "Household",
+          "num_seen_classes": 4,
+          "total_samples": 800
+        },
+        "lexicographic_tuple": [
+          0.6902874194303866,
+          0.67625,
+          0.67625
+        ],
+        "total_samples": 800
+      },
+      "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\candidate_50_50_final.pt",
+      "lexicographic_tuple": [
+        0.6902874194303866,
+        0.67625,
+        0.67625
+      ]
+    },
+    "candidate_class_balanced": {
+      "name": "EvoRoute-BR (Class-Balanced Replay)",
+      "replay_strategy": "class_balanced",
+      "finetuning": false,
+      "metrics": {
+        "split": "val",
+        "loss": 1.3802769184112549,
+        "overall_accuracy": 0.7075,
+        "balanced_accuracy": 0.7075,
+        "macro_f1": 0.7223841484439191,
+        "per_class_accuracy": {
+          "Books": 0.56,
+          "Clothing & Accessories": 0.735,
+          "Electronics": 0.555,
+          "Household": 0.98
+        },
+        "recency_metrics": {
+          "overall_accuracy": 0.7075,
+          "balanced_accuracy": 0.7075,
+          "macro_f1": 0.7223841484439191,
+          "macro_precision": 0.8479253045507775,
+          "macro_recall": 0.7075,
+          "recency_bias": 0.27625,
+          "newest_prediction_rate": 0.52625,
+          "newest_true_rate": 0.25,
+          "newest_class_accuracy": 0.98,
+          "old_class_accuracy": 0.6166666666666667,
+          "accuracy_gap": 0.3633333333333333,
+          "absolute_imbalance": 0.3633333333333333,
+          "normalized_entropy": 0.8717338582569836,
+          "raw_entropy": 1.7434677165139671,
+          "predicted_distribution": {
+            "Books": 0.14625,
+            "Clothing & Accessories": 0.18625,
+            "Electronics": 0.14125,
+            "Household": 0.52625
+          },
+          "true_distribution": {
+            "Books": 0.25,
+            "Clothing & Accessories": 0.25,
+            "Electronics": 0.25,
+            "Household": 0.25
+          },
+          "per_class_bias": {
+            "Books": -0.10375000000000001,
+            "Clothing & Accessories": -0.06375,
+            "Electronics": -0.10875000000000001,
+            "Household": 0.27625
+          },
+          "per_class_accuracy": {
+            "Books": 0.56,
+            "Clothing & Accessories": 0.735,
+            "Electronics": 0.555,
+            "Household": 0.98
+          },
+          "newest_class_name": "Household",
+          "num_seen_classes": 4,
+          "total_samples": 800
+        },
+        "lexicographic_tuple": [
+          0.7223841484439191,
+          0.7075,
+          0.7075
+        ],
+        "total_samples": 800
+      },
+      "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\candidate_class_balanced_final.pt",
+      "lexicographic_tuple": [
+        0.7223841484439191,
+        0.7075,
+        0.7075
+      ]
+    },
+    "evoroute_br_candidate": {
+      "name": "EvoRoute-BR (Class-Balanced + Fine-Tuned)",
+      "replay_strategy": "class_balanced",
+      "finetuning": true,
+      "metrics": {
+        "split": "val",
+        "loss": 1.0476800203323364,
+        "overall_accuracy": 0.7825,
+        "balanced_accuracy": 0.7825000000000001,
+        "macro_f1": 0.7930773300913614,
+        "per_class_accuracy": {
+          "Books": 0.665,
+          "Clothing & Accessories": 0.815,
+          "Electronics": 0.675,
+          "Household": 0.975
+        },
+        "recency_metrics": {
+          "overall_accuracy": 0.7825,
+          "balanced_accuracy": 0.7825000000000001,
+          "macro_f1": 0.7930773300913614,
+          "macro_precision": 0.8629117259552043,
+          "macro_recall": 0.7825000000000001,
+          "recency_bias": 0.19374999999999998,
+          "newest_prediction_rate": 0.44375,
+          "newest_true_rate": 0.25,
+          "newest_class_accuracy": 0.975,
+          "old_class_accuracy": 0.7183333333333334,
+          "accuracy_gap": 0.2566666666666666,
+          "absolute_imbalance": 0.2566666666666666,
+          "normalized_entropy": 0.9349728870939847,
+          "raw_entropy": 1.8699457741879695,
+          "predicted_distribution": {
+            "Books": 0.1725,
+            "Clothing & Accessories": 0.20625,
+            "Electronics": 0.1775,
+            "Household": 0.44375
+          },
+          "true_distribution": {
+            "Books": 0.25,
+            "Clothing & Accessories": 0.25,
+            "Electronics": 0.25,
+            "Household": 0.25
+          },
+          "per_class_bias": {
+            "Books": -0.07750000000000001,
+            "Clothing & Accessories": -0.04375000000000001,
+            "Electronics": -0.07250000000000001,
+            "Household": 0.19374999999999998
+          },
+          "per_class_accuracy": {
+            "Books": 0.665,
+            "Clothing & Accessories": 0.815,
+            "Electronics": 0.675,
+            "Household": 0.975
+          },
+          "newest_class_name": "Household",
+          "num_seen_classes": 4,
+          "total_samples": 800
+        },
+        "lexicographic_tuple": [
+          0.7930773300913614,
+          0.7825000000000001,
+          0.7825
+        ],
+        "total_samples": 800
+      },
+      "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\evoroute_br_candidate_final.pt",
+      "lexicographic_tuple": [
+        0.7930773300913614,
+        0.7825000000000001,
+        0.7825
+      ]
+    },
+    "evoroute_br_calibrated": {
+      "name": "EvoRoute-BR (Class-Balanced + Fine-Tuned) + Calibrated",
+      "replay_strategy": "class_balanced",
+      "finetuning": true,
+      "calibrated": true,
+      "calibration_report": {
+        "temperature_scaling": {
+          "optimal_temperature": 1.2518856525421143,
+          "pre_calibration": {
+            "nll": 1.0389032363891602,
+            "brier_score": 0.3556140065193176,
+            "ece": 0.15691098112612967
+          },
+          "post_calibration": {
+            "nll": 0.8707435727119446,
+            "brier_score": 0.34204205870628357,
+            "ece": 0.14036754604429003
+          }
+        },
+        "decision_rebalancing": {
+          "optimal_gamma": 3.4000000000000004,
+          "rejection_triggered": false,
+          "rejection_reason": null,
+          "pre_rebalancing_metrics": {
+            "macro_f1": 0.7930773300913614,
+            "balanced_accuracy": 0.7825000000000001,
+            "overall_accuracy": 0.7825,
+            "newest_accuracy": 0.975
+          },
+          "post_rebalancing_metrics": {
+            "macro_f1": 0.8947672547383899,
+            "balanced_accuracy": 0.89375,
+            "overall_accuracy": 0.89375,
+            "newest_accuracy": 0.92
+          },
+          "min_allowable_newest_acc": 0.6895
+        },
+        "calibration_state": {
+          "temperature": 1.2518856525421143,
+          "gamma": 3.4000000000000004,
+          "newest_class_id": 3,
+          "num_classes": 4
+        }
+      },
+      "metrics": {
+        "overall_accuracy": 0.89375,
+        "balanced_accuracy": 0.89375,
+        "macro_f1": 0.8947672547383899,
+        "macro_precision": 0.899473688024243,
+        "macro_recall": 0.89375,
+        "recency_bias": 0.034999999999999976,
+        "newest_prediction_rate": 0.285,
+        "newest_true_rate": 0.25,
+        "newest_class_accuracy": 0.92,
+        "old_class_accuracy": 0.8850000000000001,
+        "accuracy_gap": 0.03499999999999992,
+        "absolute_imbalance": 0.03499999999999992,
+        "normalized_entropy": 0.9969311167804101,
+        "raw_entropy": 1.9938622335608203,
+        "predicted_distribution": {
+          "Books": 0.225,
+          "Clothing & Accessories": 0.23375,
+          "Electronics": 0.25625,
+          "Household": 0.285
+        },
+        "true_distribution": {
+          "Books": 0.25,
+          "Clothing & Accessories": 0.25,
+          "Electronics": 0.25,
+          "Household": 0.25
+        },
+        "per_class_bias": {
+          "Books": -0.024999999999999994,
+          "Clothing & Accessories": -0.016249999999999987,
+          "Electronics": 0.006249999999999978,
+          "Household": 0.034999999999999976
+        },
+        "per_class_accuracy": {
+          "Books": 0.85,
+          "Clothing & Accessories": 0.91,
+          "Electronics": 0.895,
+          "Household": 0.92
+        },
+        "newest_class_name": "Household",
+        "num_seen_classes": 4,
+        "total_samples": 800
+      },
+      "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\evoroute_br_calibrated_final.pt",
+      "lexicographic_tuple": [
+        0.8947672547383899,
+        0.89375,
+        0.89375
+      ]
+    }
+  },
+  "selected_winner_uncalibrated": "evoroute_br_candidate",
+  "selected_winner_uncalibrated_name": "EvoRoute-BR (Class-Balanced + Fine-Tuned)",
+  "calibrated_winner": "evoroute_br_calibrated",
+  "calibration_applied": true,
+  "calibration_report": {
+    "temperature_scaling": {
+      "optimal_temperature": 1.2518856525421143,
+      "pre_calibration": {
+        "nll": 1.0389032363891602,
+        "brier_score": 0.3556140065193176,
+        "ece": 0.15691098112612967
+      },
+      "post_calibration": {
+        "nll": 0.8707435727119446,
+        "brier_score": 0.34204205870628357,
+        "ece": 0.14036754604429003
+      }
+    },
+    "decision_rebalancing": {
+      "optimal_gamma": 3.4000000000000004,
+      "rejection_triggered": false,
+      "rejection_reason": null,
+      "pre_rebalancing_metrics": {
+        "macro_f1": 0.7930773300913614,
+        "balanced_accuracy": 0.7825000000000001,
+        "overall_accuracy": 0.7825,
+        "newest_accuracy": 0.975
+      },
+      "post_rebalancing_metrics": {
+        "macro_f1": 0.8947672547383899,
+        "balanced_accuracy": 0.89375,
+        "overall_accuracy": 0.89375,
+        "newest_accuracy": 0.92
+      },
+      "min_allowable_newest_acc": 0.6895
+    },
+    "calibration_state": {
+      "temperature": 1.2518856525421143,
+      "gamma": 3.4000000000000004,
+      "newest_class_id": 3,
+      "num_classes": 4
+    }
+  }
+}

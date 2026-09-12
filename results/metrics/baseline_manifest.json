@@ -1,0 +1,46 @@
+{
+    "baseline_method": "Replay + EWC",
+    "checkpoint_filename": "replay_ewc_final.pt",
+    "checkpoint_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_ewc_final.pt",
+    "checkpoint_sha256": "e5dbee62afe2ea45410f82734037e6dbf27a7ef45fbbf34ef911fbce4b13ac6a",
+    "file_size_bytes": 531009,
+    "file_modified_timestamp": 1789196816.4232256,
+    "random_seed": 42,
+    "memory_budget": 200,
+    "effective_batch_size": 76,
+    "official_metrics": {
+        "overall_accuracy": 0.65625,
+        "final_avg_task_accuracy": 0.68,
+        "average_forgetting": 0.465,
+        "recency_bias": 0.33375,
+        "per_class_accuracy": {
+            "Books": 0.48,
+            "Clothing & Accessories": 0.69,
+            "Electronics": 0.47,
+            "Household": 0.985
+        },
+        "prediction_distribution": {
+            "Books": 0.12,
+            "Clothing & Accessories": 0.17625,
+            "Electronics": 0.12,
+            "Household": 0.58375
+        }
+    },
+    "environment_metadata": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+        "pytorch_version": "2.13.0+cpu",
+        "cuda_available": false,
+        "cuda_device_count": 0,
+        "cuda_device_name": "None",
+        "numpy_version": "2.4.3",
+        "primary_seed": 42,
+        "robustness_seeds": [
+            42,
+            123,
+            456
+        ],
+        "sklearn_version": "1.8.0",
+        "sentence_transformers_version": "6.0.0"
+    }
+}

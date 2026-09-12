@@ -150,7 +150,8 @@ def test_streamlit_runtime_verification():
         "memory_vs_forgetting.png",
         "knowledge_retention_heatmap.png",
         "novelty_detection_distribution.png",
-        "lwf_retention_analysis.png"
+        "lwf_retention_analysis.png",
+        "recency_bias_collapse.png"
     ]
     for p in required_plots:
         plot_file = RESULTS_PLOTS_DIR / p

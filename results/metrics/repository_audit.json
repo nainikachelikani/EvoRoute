@@ -1,0 +1,138 @@
+{
+    "project_name": "EvoRoute \u2014 Adaptive E-Commerce Intelligence",
+    "continual_learning_track": "Strict Class-Incremental Learning (Zero task oracle)",
+    "categories": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+    ],
+    "tasks": {
+        "1": [
+            "Books",
+            "Clothing & Accessories"
+        ],
+        "2": [
+            "Electronics"
+        ],
+        "3": [
+            "Household"
+        ]
+    },
+    "baseline_training_config": {
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "epochs_per_task": 10,
+        "replay_memory_budget": 200,
+        "replay_sample_ratio": 0.2,
+        "effective_batch_size": 76,
+        "ewc_lambda": 100.0,
+        "lwf_temperature": 2.0,
+        "lwf_lambda": 1.0
+    },
+    "total_checkpoints_found": 21,
+    "checkpoints": {
+        "ewc_final.pt": {
+            "size_bytes": 530925,
+            "sha256": "6e5dc4a8363bd26329bc8910e36d4d859ea92e12bcac0f9c1e26fd2621ac5e70"
+        },
+        "ewc_task1.pt": {
+            "size_bytes": 529901,
+            "sha256": "9fee8303100d4936bf4bfd1e5f7cdc7c97d42fc629ae68a59e67846b9711222b"
+        },
+        "ewc_task2.pt": {
+            "size_bytes": 530413,
+            "sha256": "c59e06906bf7f18ae6a1908a34a6c6abbf4f4103afacaaccff3cb8c448e3fd60"
+        },
+        "ewc_task3.pt": {
+            "size_bytes": 530925,
+            "sha256": "82ec2120f3cfa25243ca8f3fe598a921800666525d2e72e08111edd917f4c4a6"
+        },
+        "joint_final.pt": {
+            "size_bytes": 530949,
+            "sha256": "73254e7231cd92cfb6f9dcc1cb5c6672dbdcb6e629628f14a8d5d56368ccf193"
+        },
+        "lwf_final.pt": {
+            "size_bytes": 530925,
+            "sha256": "f2a45a33bac8b945c2a60f63ddb04ff96f7f4257740be44c6f76b8dfaf6430e7"
+        },
+        "lwf_task1.pt": {
+            "size_bytes": 529901,
+            "sha256": "925035b50ef23ba8d8a17d518901adeffb85c2197479567f84940de28c61b134"
+        },
+        "lwf_task2.pt": {
+            "size_bytes": 530413,
+            "sha256": "99b58a77b1c9300e496b47fef6c365a8fc32474a8c03b32d088ba37f24c2cb3d"
+        },
+        "lwf_task3.pt": {
+            "size_bytes": 530925,
+            "sha256": "ec05feb91443f89e531baae14d3644b7e971b775125574845e296053b9e7d96d"
+        },
+        "naive_final.pt": {
+            "size_bytes": 530949,
+            "sha256": "1f0cbee1b574cfea9aadbe2d617f1c89a89ff40aeb0f6358d3c07c1f40c555e8"
+        },
+        "naive_task1.pt": {
+            "size_bytes": 529925,
+            "sha256": "b11f94817d7c35405429c0b654f3483bd2b66b9ae14a8b0d67378b0724c37c4f"
+        },
+        "naive_task2.pt": {
+            "size_bytes": 530437,
+            "sha256": "ae19c1028b970c2d83bf00e2a51bf5245b36c580caa41d37b632ddfb96c4864e"
+        },
+        "naive_task3.pt": {
+            "size_bytes": 530949,
+            "sha256": "640138023f1717502b7062418418bcb43a87fdfaac97e196f73418e7f2a0cb16"
+        },
+        "replay_ewc_final.pt": {
+            "size_bytes": 531009,
+            "sha256": "e5dbee62afe2ea45410f82734037e6dbf27a7ef45fbbf34ef911fbce4b13ac6a"
+        },
+        "replay_ewc_task1.pt": {
+            "size_bytes": 529985,
+            "sha256": "ffa5b61181724d64b6742ef64e0ddec577dce8a88404fccd4723e1c593d89d85"
+        },
+        "replay_ewc_task2.pt": {
+            "size_bytes": 530497,
+            "sha256": "270ffb402afcbeac4c2e166a37582a68677e4f40c24c6617272d96ac3aab297b"
+        },
+        "replay_ewc_task3.pt": {
+            "size_bytes": 531009,
+            "sha256": "e66358aeae7e8dbbe045ff3f8fe3eeffceb43862a9133b33e24a89e7e1c3f13b"
+        },
+        "replay_final.pt": {
+            "size_bytes": 530961,
+            "sha256": "7d1fcdc2e816c54402a0e68b0a86b9d70bb1f43edf8dfa93010fc952e27940a8"
+        },
+        "replay_task1.pt": {
+            "size_bytes": 529937,
+            "sha256": "f7132a0dfee980ff963741abd16f7c0af6eeba242df96e9e84aad79e12238f5f"
+        },
+        "replay_task2.pt": {
+            "size_bytes": 530449,
+            "sha256": "f63290080b2733edfcab00aa60b48fbd254f08d1766e2346147389b387ec7ef7"
+        },
+        "replay_task3.pt": {
+            "size_bytes": 530961,
+            "sha256": "e6c5c731eb8008ac79a7f2ce749f221b1a07603bfc9c68767f7212249ea71e16"
+        }
+    },
+    "baseline_sha256": "e5dbee62afe2ea45410f82734037e6dbf27a7ef45fbbf34ef911fbce4b13ac6a",
+    "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+        "pytorch_version": "2.13.0+cpu",
+        "cuda_available": false,
+        "cuda_device_count": 0,
+        "cuda_device_name": "None",
+        "numpy_version": "2.4.3",
+        "primary_seed": 42,
+        "robustness_seeds": [
+            42,
+            123,
+            456
+        ],
+        "sklearn_version": "1.8.0",
+        "sentence_transformers_version": "6.0.0"
+    }
+}

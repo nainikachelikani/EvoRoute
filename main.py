@@ -117,28 +117,48 @@ def run_novelty_experiments() -> dict:
 
 def print_official_benchmark_table(all_results: dict):
     """Prints the official Class-Incremental Continual Learning benchmark table."""
-    logger.info("\n" + "="*90)
+    logger.info("\n" + "="*95)
     logger.info("                         EVOROUTE OFFICIAL BENCHMARK RESULTS")
-    logger.info("="*90)
-    header = f"{'Method':<22} | {'Overall Accuracy':<18} | {'Final Avg Task Acc':<20} | {'Avg Forgetting':<16} | {'Memory':<12}"
+    logger.info("="*95)
+    header = f"{'Method':<26} | {'Overall Accuracy':<18} | {'Final Avg Task Acc':<20} | {'Avg Forgetting':<16} | {'Memory':<12}"
     logger.info(header)
-    logger.info("-" * 90)
+    logger.info("-" * 95)
     method_order = [
         ("naive", "Naive Sequential", "0"),
         ("ewc", "EWC", "0"),
         ("replay", "Experience Replay", "200"),
-        ("lwf", "LwF ⭐", "0"),
-        ("replay_ewc", "Replay + EWC ⭐", "200"),
+        ("lwf", "LwF", "0"),
+        ("replay_ewc", "Replay + EWC (Baseline)", "200"),
+        ("evoroute_br_candidate", "EvoRoute-BR Candidate", "200"),
+        ("evoroute_br_calibrated", "EvoRoute-BR Calibrated *", "200"),
         ("joint", "Joint Upper Bound", "Full Dataset"),
     ]
     for key, name, mem in method_order:
         if key in all_results:
             r = all_results[key]
             overall = f"{r.get('overall_accuracy', 0.0) * 100:.2f}%"
-            task_acc = f"{r.get('final_avg_task_accuracy', 0.0) * 100:.2f}%"
+            task_acc = f"{r.get('final_avg_task_accuracy', r.get('balanced_accuracy', 0.0)) * 100:.2f}%"
             forget = f"{r.get('average_forgetting', 0.0) * 100:.2f}%"
-            logger.info(f"{name:<22} | {overall:>18} | {task_acc:>20} | {forget:>16} | {mem:>12}")
-    logger.info("="*90 + "\n")
+            logger.info(f"{name:<26} | {overall:>18} | {task_acc:>20} | {forget:>16} | {mem:>12}")
+    logger.info("="*95 + "\n")
+
+    logger.info("="*95)
+    logger.info("                 RECENCY BIAS & TEST PREDICTION DISTRIBUTION")
+    logger.info("="*95)
+    logger.info(f"{'Method':<26} | {'Books':<8} | {'Clothing':<8} | {'Electronics':<11} | {'Household':<9} | {'Recency Bias':<14}")
+    logger.info("-" * 95)
+    for key, name, _ in method_order:
+        if key in all_results:
+            r = all_results[key]
+            dist = r.get("prediction_distribution", r.get("predicted_distribution", {}))
+            rb = r.get("recency_bias", 0.0)
+            b_pct = f"{dist.get('Books', 0.0)*100:.1f}%"
+            c_pct = f"{dist.get('Clothing & Accessories', 0.0)*100:.1f}%"
+            e_pct = f"{dist.get('Electronics', 0.0)*100:.1f}%"
+            h_pct = f"{dist.get('Household', 0.0)*100:.1f}%"
+            rb_str = f"{rb:+.4f}"
+            logger.info(f"{name:<26} | {b_pct:>8} | {c_pct:>8} | {e_pct:>11} | {h_pct:>9} | {rb_str:>14}")
+    logger.info("="*95 + "\n")
 
 
 def stage_train_and_evaluate(
@@ -241,7 +261,7 @@ def main():
         "--stage",
         type=str,
         default="all",
-        choices=["all", "preprocess", "embeddings", "train", "evaluate", "visualize", "demo"],
+        choices=["all", "preprocess", "embeddings", "train", "evaluate", "visualize", "demo", "benchmark"],
         help="Pipeline stage to execute."
     )
     parser.add_argument(
@@ -284,6 +304,18 @@ def main():
         stage_visualize()
     elif args.stage == "demo":
         stage_demo()
+    elif args.stage == "benchmark":
+        bench_path = RESULTS_METRICS_DIR / "official_benchmark_manifest.json"
+        if bench_path.exists():
+            with open(bench_path, "r") as f:
+                manifest = json.load(f)
+            print_official_benchmark_table(manifest.get("benchmark_results", {}))
+        elif FINAL_METRICS_PATH.exists():
+            with open(FINAL_METRICS_PATH, "r") as f:
+                res = json.load(f)
+            print_official_benchmark_table(res)
+        else:
+            logger.error("No benchmark metrics found. Run 'python main.py --stage evaluate' or training first.")
     elif args.stage == "all":
         stage_preprocess()
         stage_embeddings(force=args.force_embeddings)

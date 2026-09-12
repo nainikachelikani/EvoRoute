@@ -1,0 +1,84 @@
+{
+  "plots": [
+    {
+      "filename": "accuracy_across_tasks.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\accuracy_across_tasks.png",
+      "title": "Overall Accuracy Across Continual Tasks",
+      "caption": "Trajectory of multi-class seen accuracy across Task 1 (Books/Clothing), Task 2 (Electronics), and Task 3 (Household). Demonstrates naive sequential collapse versus robust continual retention.",
+      "exists": true,
+      "size_bytes": 95530
+    },
+    {
+      "filename": "catastrophic_forgetting.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\catastrophic_forgetting.png",
+      "title": "Catastrophic Forgetting Comparison",
+      "caption": "Average catastrophic forgetting across continual learning methods. Exemplar-free methods suffer 99.5% forgetting, while replay mitigates parameter drift.",
+      "exists": true,
+      "size_bytes": 147650
+    },
+    {
+      "filename": "per_class_accuracy.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\per_class_accuracy.png",
+      "title": "Per-Class Retained Accuracy",
+      "caption": "Final retained accuracy per retail category after completing all tasks. EvoRoute-BR demonstrates high balanced accuracy across all classes simultaneously.",
+      "exists": true,
+      "size_bytes": 139022
+    },
+    {
+      "filename": "memory_vs_accuracy.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\memory_vs_accuracy.png",
+      "title": "Memory Budget Sensitivity vs Accuracy",
+      "caption": "Effect of replay memory size (0, 50, 100, 200 exemplars) on final overall classification accuracy.",
+      "exists": true,
+      "size_bytes": 142759
+    },
+    {
+      "filename": "memory_vs_forgetting.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\memory_vs_forgetting.png",
+      "title": "Memory Budget Sensitivity vs Forgetting",
+      "caption": "Effect of replay buffer capacity on catastrophic forgetting reduction, highlighting strong memory efficiency at 200 samples.",
+      "exists": true,
+      "size_bytes": 155273
+    },
+    {
+      "filename": "knowledge_retention_heatmap.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\knowledge_retention_heatmap.png",
+      "title": "Knowledge Retention Matrix Heatmap",
+      "caption": "Dual retention matrix heatmaps comparing Naive Sequential learning (left) and Replay + EWC retention (right) across incremental training stages.",
+      "exists": true,
+      "size_bytes": 165900
+    },
+    {
+      "filename": "lwf_retention_analysis.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\lwf_retention_analysis.png",
+      "title": "Learning without Forgetting (LwF) Diagnostic",
+      "caption": "Examines why standalone knowledge distillation collapses under strict Class-Incremental Learning without exemplars.",
+      "exists": true,
+      "size_bytes": 103416
+    },
+    {
+      "filename": "recency_bias_collapse.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\recency_bias_collapse.png",
+      "title": "Recency Bias Collapse Across Baselines",
+      "caption": "Empirical prediction distribution on the held-out test split, illustrating how unanchored output expansion causes 100% collapse into Household.",
+      "exists": true,
+      "size_bytes": 235875
+    },
+    {
+      "filename": "prediction_transition_matrix.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\prediction_transition_matrix.png",
+      "title": "Sample-Level Prediction Transition Matrix",
+      "caption": "Transitions of individual product classifications from Baseline Replay + EWC to EvoRoute-BR Calibrated, documenting 212 recovered samples.",
+      "exists": true,
+      "size_bytes": 172839
+    },
+    {
+      "filename": "confusion_matrix_comparison.png",
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\results\\plots\\confusion_matrix_comparison.png",
+      "title": "Normalized Confusion Matrix Comparison",
+      "caption": "Side-by-side normalized test confusion matrices illustrating the transformation from asymmetric Household bias to a balanced diagonal.",
+      "exists": true,
+      "size_bytes": 253749
+    }
+  ]
+}

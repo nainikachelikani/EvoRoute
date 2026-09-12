@@ -26,6 +26,20 @@ FINAL_METRICS_PATH = RESULTS_METRICS_DIR / "final_results.json"
 MEMORY_STUDY_PATH = RESULTS_METRICS_DIR / "memory_sensitivity.json"
 NOVELTY_METRICS_PATH = RESULTS_METRICS_DIR / "novelty_metrics.json"
 
+# Manifest and Artifact Paths
+BASELINE_MANIFEST_PATH = RESULTS_METRICS_DIR / "baseline_manifest.json"
+CONFIG_MANIFEST_PATH = RESULTS_METRICS_DIR / "config_manifest.json"
+OFFICIAL_BENCHMARK_MANIFEST_PATH = RESULTS_METRICS_DIR / "official_benchmark_manifest.json"
+PREDICTION_TRANSITION_MATRIX_PATH = RESULTS_METRICS_DIR / "prediction_transition_matrix.json"
+SANITY_CHECK_RESULTS_PATH = RESULTS_METRICS_DIR / "sanity_check_results.json"
+SCIENTIFIC_SUMMARY_PATH = RESULTS_METRICS_DIR / "scientific_summary.json"
+PLOT_MANIFEST_PATH = RESULTS_METRICS_DIR / "plot_manifest.json"
+
+# Checkpoint Paths
+BASELINE_CHECKPOINT_PATH = MODELS_DIR / "replay_ewc_final.pt"
+EVOROUTE_BR_CHECKPOINT_PATH = MODELS_DIR / "evoroute_br_candidate_final.pt"
+EVOROUTE_BR_CALIBRATED_CHECKPOINT_PATH = MODELS_DIR / "evoroute_br_calibrated_final.pt"
+
 # Ensure output directories exist
 for directory in [DATA_PROCESSED_DIR, MODELS_DIR, RESULTS_METRICS_DIR, RESULTS_PLOTS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
@@ -106,3 +120,52 @@ NOVELTY_CALIBRATION_PERCENTILE = 95.0
 
 # Device
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Scientific Baseline Configuration (Immutable reference)
+BASELINE_CONFIG = {
+    "method": "replay_ewc",
+    "replay_strategy": "original",
+    "replay_memory_budget": 200,
+    "replay_sample_ratio": 0.2,
+    "batch_size": 64,
+    "learning_rate": 1e-3,
+    "weight_decay": 1e-4,
+    "epochs_per_task": 10,
+    "ewc_lambda": 100.0,
+    "seed": 42
+}
+
+# EvoRoute-BR Experimental Candidate Configuration
+EVOROUTE_BR_CONFIG = {
+    "candidate_name": "evoroute_br_candidate",
+    "replay_strategy": "class_balanced",
+    "replay_memory_budget": 200,
+    "batch_size": 64,
+    "learning_rate": 1e-3,
+    "weight_decay": 1e-4,
+    "epochs_per_task": 10,
+    "ewc_lambda": 100.0,
+    "seed": 42,
+    "finetuning_enabled": True,
+    "finetuning_epochs": 10,
+    "finetuning_lr": 1e-4,
+    "finetuning_patience": 2,
+    "metric_tolerance": 1e-4
+}
+
+# Post-hoc Calibration Configuration (Validation Split Only)
+CALIBRATION_CONFIG = {
+    "confidence_temperature_scaling": True,
+    "decision_rebalancing": True,
+    "gamma_search_range": (0.0, 5.0),
+    "gamma_search_steps": 51,
+    "regularization_weight": 0.01,
+    "max_newest_accuracy_drop": 0.30,
+    "min_newest_accuracy_absolute": 0.60
+}
+
+# Metric Tolerances & Anti-Collapse Invariants
+METRIC_TOLERANCE = 1e-4
+MIN_NEWEST_CLASS_ACCURACY = 0.60
+MIN_OLD_CLASS_ACCURACY = 0.40
+MAX_FORGETTING_INCREASE = 0.05

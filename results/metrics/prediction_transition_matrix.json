@@ -1,0 +1,86 @@
+{
+  "evoroute_br_candidate": {
+    "source_method": "replay_ewc (Baseline)",
+    "target_method": "evoroute_br_candidate",
+    "total_test_samples": 800,
+    "transition_matrix_counts": {
+      "Books": {
+        "Books": 96,
+        "Clothing & Accessories": 0,
+        "Electronics": 0,
+        "Household": 0
+      },
+      "Clothing & Accessories": {
+        "Books": 0,
+        "Clothing & Accessories": 141,
+        "Electronics": 0,
+        "Household": 0
+      },
+      "Electronics": {
+        "Books": 0,
+        "Clothing & Accessories": 0,
+        "Electronics": 96,
+        "Household": 0
+      },
+      "Household": {
+        "Books": 45,
+        "Clothing & Accessories": 31,
+        "Electronics": 57,
+        "Household": 334
+      }
+    },
+    "recovered_samples_count": 126,
+    "new_errors_count": 3,
+    "net_improvement_count": 123,
+    "both_correct_count": 522,
+    "both_incorrect_count": 149,
+    "household_false_positives_resolved": {
+      "recovered_books": 45,
+      "recovered_clothing": 30,
+      "recovered_electronics": 51,
+      "total_household_fp_resolved": 126
+    }
+  },
+  "evoroute_br_calibrated": {
+    "source_method": "replay_ewc (Baseline)",
+    "target_method": "evoroute_br_calibrated",
+    "total_test_samples": 800,
+    "transition_matrix_counts": {
+      "Books": {
+        "Books": 96,
+        "Clothing & Accessories": 0,
+        "Electronics": 0,
+        "Household": 0
+      },
+      "Clothing & Accessories": {
+        "Books": 0,
+        "Clothing & Accessories": 141,
+        "Electronics": 0,
+        "Household": 0
+      },
+      "Electronics": {
+        "Books": 0,
+        "Clothing & Accessories": 0,
+        "Electronics": 96,
+        "Household": 0
+      },
+      "Household": {
+        "Books": 78,
+        "Clothing & Accessories": 57,
+        "Electronics": 104,
+        "Household": 228
+      }
+    },
+    "recovered_samples_count": 212,
+    "new_errors_count": 13,
+    "net_improvement_count": 199,
+    "both_correct_count": 512,
+    "both_incorrect_count": 63,
+    "household_false_positives_resolved": {
+      "recovered_books": 77,
+      "recovered_clothing": 53,
+      "recovered_electronics": 82,
+      "total_household_fp_resolved": 212
+    }
+  }
+}

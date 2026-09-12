@@ -1,0 +1,578 @@
+[
+  {
+    "id": 1,
+    "query_text": "The Pragmatic Programmer: Your Journey to Mastery (20th Anniversary Edition) Paperback",
+    "ground_truth_category": "Books",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Books",
+        "confidence": 0.9941391944885254,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.9941391944885254,
+          "Clothing & Accessories": 9.181390761873413e-15,
+          "Electronics": 2.9890188670833595e-06,
+          "Household": 0.005857919342815876
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Books",
+        "confidence": 0.9998006224632263,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.9998006224632263,
+          "Clothing & Accessories": 9.697273240253108e-17,
+          "Electronics": 5.3900247820592995e-08,
+          "Household": 0.00019935659656766802
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Books",
+        "confidence": 0.9999614953994751,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.9999614953994751,
+          "Clothing & Accessories": 1.6168393934899022e-13,
+          "Electronics": 1.5634486771887168e-06,
+          "Household": 3.695001942105591e-05
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.5165045261383057,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Books",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 2,
+    "query_text": "A Brief History of Time by Stephen Hawking - Illustrated Hardcover Scientific Book",
+    "ground_truth_category": "Books",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.9798346161842346,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 0.01633591018617153,
+          "Clothing & Accessories": 4.797097474806833e-08,
+          "Electronics": 0.003829403081908822,
+          "Household": 0.9798346161842346
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Household",
+        "confidence": 0.8888723254203796,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 0.10426495969295502,
+          "Clothing & Accessories": 6.665221263801868e-09,
+          "Electronics": 0.0068627046421170235,
+          "Household": 0.8888723254203796
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Books",
+        "confidence": 0.7700298428535461,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.7700298428535461,
+          "Clothing & Accessories": 1.3794889355267514e-06,
+          "Electronics": 0.0876227617263794,
+          "Household": 0.1423460990190506
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.5898119211196899,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Books",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 3,
+    "query_text": "Fantasy adventure novel about young wizards and magical creatures in ancient kingdom",
+    "ground_truth_category": "Books",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.7541308999061584,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 0.24414145946502686,
+          "Clothing & Accessories": 1.752741063398844e-08,
+          "Electronics": 0.001727663679048419,
+          "Household": 0.7541308999061584
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Books",
+        "confidence": 0.5996291041374207,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.5996291041374207,
+          "Clothing & Accessories": 1.9039166687662146e-08,
+          "Electronics": 0.0016441631596535444,
+          "Household": 0.3987267315387726
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Books",
+        "confidence": 0.9679820537567139,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.9679820537567139,
+          "Clothing & Accessories": 9.91550450635259e-07,
+          "Electronics": 0.008697696030139923,
+          "Household": 0.023319203406572342
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.767737865447998,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Books",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 4,
+    "query_text": "Men's Regular Fit Cotton Casual Shirt with Button-Down Collar and Long Sleeves",
+    "ground_truth_category": "Clothing & Accessories",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9960979223251343,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 5.212181597782917e-13,
+          "Clothing & Accessories": 0.9960979223251343,
+          "Electronics": 2.9110464311088435e-05,
+          "Household": 0.003872927976772189
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9999016523361206,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 5.794850971280576e-16,
+          "Clothing & Accessories": 0.9999016523361206,
+          "Electronics": 2.3102027171262307e-06,
+          "Household": 9.609432163415477e-05
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9999479055404663,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 6.742266250511775e-13,
+          "Clothing & Accessories": 0.9999479055404663,
+          "Electronics": 3.1457435397896916e-05,
+          "Household": 2.062572275463026e-05
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.4188843369483948,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Clothing & Accessories",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 5,
+    "query_text": "Women's High-Waisted Stretch Skinny Jeans Denim Pants with 5 Pockets",
+    "ground_truth_category": "Clothing & Accessories",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9787084460258484,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 1.906052815581205e-10,
+          "Clothing & Accessories": 0.9787084460258484,
+          "Electronics": 0.00035618082620203495,
+          "Household": 0.020935313776135445
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9995995163917542,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 9.747998713565895e-14,
+          "Clothing & Accessories": 0.9995995163917542,
+          "Electronics": 2.2146889023133554e-05,
+          "Household": 0.0003782977582886815
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Clothing & Accessories",
+        "confidence": 0.9997469782829285,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 4.044271861847193e-11,
+          "Clothing & Accessories": 0.9997469782829285,
+          "Electronics": 0.0001913762534968555,
+          "Household": 6.163374928291887e-05
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.5018380880355835,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Clothing & Accessories",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 6,
+    "query_text": "Breathable running athletic sports shoes sneakers for marathon training",
+    "ground_truth_category": "Clothing & Accessories",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.982609748840332,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 3.064711791012087e-06,
+          "Clothing & Accessories": 0.0075766355730593204,
+          "Electronics": 0.009810525923967361,
+          "Household": 0.982609748840332
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Household",
+        "confidence": 0.9142158627510071,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 6.841917752353766e-07,
+          "Clothing & Accessories": 0.030381619930267334,
+          "Electronics": 0.055401869118213654,
+          "Household": 0.9142158627510071
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Electronics",
+        "confidence": 0.5175284743309021,
+        "is_correct": false,
+        "probabilities": {
+          "Books": 6.21114595560357e-05,
+          "Clothing & Accessories": 0.32027119398117065,
+          "Electronics": 0.5175284743309021,
+          "Household": 0.1621382087469101
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.5930009484291077,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Clothing & Accessories",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 7,
+    "query_text": "Sony WH-1000XM5 Wireless Noise Canceling Over-Ear Headphones with Bluetooth",
+    "ground_truth_category": "Electronics",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Electronics",
+        "confidence": 0.6676121354103088,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.0020429445430636406,
+          "Clothing & Accessories": 0.0001085665644495748,
+          "Electronics": 0.6676121354103088,
+          "Household": 0.33023637533187866
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Electronics",
+        "confidence": 0.9636019468307495,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.00025180447846651077,
+          "Clothing & Accessories": 2.5306171664851718e-05,
+          "Electronics": 0.9636019468307495,
+          "Household": 0.03612101450562477
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Electronics",
+        "confidence": 0.996000349521637,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.0013687046011909842,
+          "Clothing & Accessories": 0.00021839476539753377,
+          "Electronics": 0.996000349521637,
+          "Household": 0.0024124952033162117
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": true,
+      "distance_to_centroid": 0.7949928045272827,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Electronics",
+      "novelty_verdict": "HIGH NOVELTY / UNKNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 8,
+    "query_text": "ASUS ROG Strix GeForce RTX 4080 16GB GDDR6X Gaming Graphics Card",
+    "ground_truth_category": "Electronics",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Electronics",
+        "confidence": 0.78182452917099,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.002566819777712226,
+          "Clothing & Accessories": 2.524042793083936e-05,
+          "Electronics": 0.78182452917099,
+          "Household": 0.2155834138393402
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Electronics",
+        "confidence": 0.9929653406143188,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.00013866786321159452,
+          "Clothing & Accessories": 2.4389732971030753e-06,
+          "Electronics": 0.9929653406143188,
+          "Household": 0.006893527694046497
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Electronics",
+        "confidence": 0.9985063672065735,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.0008318207692354918,
+          "Clothing & Accessories": 3.298595402156934e-05,
+          "Electronics": 0.9985063672065735,
+          "Household": 0.0006288638687692583
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.7177364826202393,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Electronics",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 9,
+    "query_text": "Apple iPad Pro 12.9-inch Liquid Retina XDR Display M2 Chip 256GB Space Gray",
+    "ground_truth_category": "Electronics",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Electronics",
+        "confidence": 0.8237026333808899,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 9.678413334768265e-05,
+          "Clothing & Accessories": 0.00012592910206876695,
+          "Electronics": 0.8237026333808899,
+          "Household": 0.17607468366622925
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Electronics",
+        "confidence": 0.996246874332428,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 2.98622853733832e-06,
+          "Clothing & Accessories": 2.215243739556172e-06,
+          "Electronics": 0.996246874332428,
+          "Household": 0.003747900016605854
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Electronics",
+        "confidence": 0.9995447993278503,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 3.8713500543963164e-05,
+          "Clothing & Accessories": 3.049706901947502e-05,
+          "Electronics": 0.9995447993278503,
+          "Household": 0.0003858863783534616
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.6031736135482788,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Electronics",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 10,
+    "query_text": "Prestige Electric Kettle 1.5L Stainless Steel Body with Auto Cut-Off",
+    "ground_truth_category": "Household",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.9999288320541382,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 5.779614730272442e-05,
+          "Clothing & Accessories": 7.179136929380547e-08,
+          "Electronics": 1.3332789421838243e-05,
+          "Household": 0.9999288320541382
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Household",
+        "confidence": 0.9987398982048035,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.0012517968425527215,
+          "Clothing & Accessories": 1.782702341301956e-08,
+          "Electronics": 8.333676305483095e-06,
+          "Household": 0.9987398982048035
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Household",
+        "confidence": 0.8720561265945435,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.12563417851924896,
+          "Clothing & Accessories": 1.6896003216970712e-05,
+          "Electronics": 0.0022928346879780293,
+          "Household": 0.8720561265945435
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.6881319880485535,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Household",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 11,
+    "query_text": "Cotton King Size Bedsheet with 2 Pillow Covers Floral Print Elastic Fitted",
+    "ground_truth_category": "Household",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.9991511106491089,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 7.544623059629885e-08,
+          "Clothing & Accessories": 0.0007779136649332941,
+          "Electronics": 7.085636025294662e-05,
+          "Household": 0.9991511106491089
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Household",
+        "confidence": 0.9988318085670471,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 1.4159751593467718e-08,
+          "Clothing & Accessories": 0.0011454300256446004,
+          "Electronics": 2.278302599734161e-05,
+          "Household": 0.9988318085670471
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Household",
+        "confidence": 0.8771326541900635,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 1.4137569451122545e-05,
+          "Clothing & Accessories": 0.117703877389431,
+          "Electronics": 0.005149381700903177,
+          "Household": 0.8771326541900635
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.5789690017700195,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Clothing & Accessories",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  },
+  {
+    "id": 12,
+    "query_text": "Non-Stick 3-Piece Cookware Set Fry Pan Kadhai Dosa Tawa Induction Bottom",
+    "ground_truth_category": "Household",
+    "classifier_predictions": {
+      "baseline_replay_ewc": {
+        "predicted_category": "Household",
+        "confidence": 0.9997761845588684,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 2.109037450281903e-05,
+          "Clothing & Accessories": 9.146235242951661e-05,
+          "Electronics": 0.00011129252379760146,
+          "Household": 0.9997761845588684
+        }
+      },
+      "evoroute_br_candidate": {
+        "predicted_category": "Household",
+        "confidence": 0.9998437166213989,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 2.1513869796763174e-05,
+          "Clothing & Accessories": 8.975130913313478e-05,
+          "Electronics": 4.500823706621304e-05,
+          "Household": 0.9998437166213989
+        }
+      },
+      "evoroute_br_calibrated": {
+        "predicted_category": "Household",
+        "confidence": 0.9678241610527039,
+        "is_correct": true,
+        "probabilities": {
+          "Books": 0.0054231383837759495,
+          "Clothing & Accessories": 0.016973106190562248,
+          "Electronics": 0.009779656305909157,
+          "Household": 0.9678241610527039
+        }
+      }
+    },
+    "novelty_assessment_independent": {
+      "is_novel": false,
+      "distance_to_centroid": 0.6812417507171631,
+      "calibrated_threshold": 0.7732715010643005,
+      "nearest_semantic_category": "Household",
+      "novelty_verdict": "FAMILIAR / KNOWN",
+      "separation_guarantee": "Novelty assessment does NOT mutate or override classifier prediction."
+    }
+  }
+]

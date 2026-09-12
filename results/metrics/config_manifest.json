@@ -1,0 +1,56 @@
+{
+  "status": "LOCKED",
+  "lock_timestamp": "2026-09-12T08:43:41.990625+00:00",
+  "configuration_hash": "36b3276de6497b97704230ce079781c41681cb0169f33649e39375c757e9894b",
+  "selected_uncalibrated_method": "evoroute_br_candidate",
+  "selected_uncalibrated_name": "EvoRoute-BR (Class-Balanced + Fine-Tuned)",
+  "selected_calibrated_method": "evoroute_br_calibrated",
+  "calibration_applied": true,
+  "calibration_parameters": {
+    "temperature": 1.2518856525421143,
+    "gamma": 3.4000000000000004,
+    "newest_class_id": 3,
+    "num_classes": 4
+  },
+  "anti_collapse_verification": {
+    "status": "PASSED",
+    "min_newest_class_accuracy_required": 0.6,
+    "min_old_class_accuracy_required": 0.4,
+    "max_forgetting_increase_allowed": 0.05,
+    "winner_newest_accuracy": 0.975,
+    "winner_old_accuracy": 0.7183333333333334,
+    "calibrated_newest_accuracy": 0.92,
+    "calibrated_old_accuracy": 0.8850000000000001
+  },
+  "checkpoints": {
+    "baseline": {
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_ewc_final.pt",
+      "sha256": "e5dbee62afe2ea45410f82734037e6dbf27a7ef45fbbf34ef911fbce4b13ac6a"
+    },
+    "candidate_uncalibrated": {
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\evoroute_br_candidate_final.pt",
+      "sha256": "53cbd13f54ce3d2c9ac57af75ffd310b4007cc5906c276ba73ba8e49a5647bfa"
+    },
+    "candidate_calibrated": {
+      "path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\evoroute_br_calibrated_final.pt",
+      "sha256": "f9834272e27e53870be7599d406bd46314ca3f5cea4daff55e5c48dcd6e615b7"
+    }
+  },
+  "reproducibility": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "pytorch_version": "2.13.0+cpu",
+    "cuda_available": false,
+    "cuda_device_count": 0,
+    "cuda_device_name": "None",
+    "numpy_version": "2.4.3",
+    "primary_seed": 42,
+    "robustness_seeds": [
+      42,
+      123,
+      456
+    ],
+    "sklearn_version": "1.8.0",
+    "sentence_transformers_version": "6.0.0"
+  }
+}

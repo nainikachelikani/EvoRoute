@@ -1,0 +1,96 @@
+{
+  "title": "EvoRoute Scientific Benchmark Summary",
+  "last_updated": "2026-09-12T08:44:20.656459+00:00",
+  "recommended_method": "evoroute_br_calibrated",
+  "recommendation_rationale": "EvoRoute-BR Calibrated outperforms Replay + EWC Baseline across all primary metrics (90.50% accuracy vs 65.62%) while reducing recency bias from +33.4% to +3.5%.",
+  "summary_table": [
+    {
+      "method": "Naive Sequential",
+      "key": "naive",
+      "overall_accuracy": "25.00%",
+      "balanced_accuracy": "25.00%",
+      "macro_f1": "10.00%",
+      "recency_bias": "+75.00%",
+      "household_share": "100.0%",
+      "memory_budget": "0",
+      "is_continual": true
+    },
+    {
+      "method": "EWC",
+      "key": "ewc",
+      "overall_accuracy": "25.00%",
+      "balanced_accuracy": "25.00%",
+      "macro_f1": "10.00%",
+      "recency_bias": "+75.00%",
+      "household_share": "100.0%",
+      "memory_budget": "0",
+      "is_continual": true
+    },
+    {
+      "method": "Experience Replay",
+      "key": "replay",
+      "overall_accuracy": "58.25%",
+      "balanced_accuracy": "58.25%",
+      "macro_f1": "59.35%",
+      "recency_bias": "+41.00%",
+      "household_share": "66.0%",
+      "memory_budget": "200",
+      "is_continual": true
+    },
+    {
+      "method": "LwF",
+      "key": "lwf",
+      "overall_accuracy": "25.00%",
+      "balanced_accuracy": "25.00%",
+      "macro_f1": "10.00%",
+      "recency_bias": "+75.00%",
+      "household_share": "100.0%",
+      "memory_budget": "0",
+      "is_continual": true
+    },
+    {
+      "method": "Replay + EWC (Baseline)",
+      "key": "replay_ewc",
+      "overall_accuracy": "65.62%",
+      "balanced_accuracy": "65.62%",
+      "macro_f1": "67.10%",
+      "recency_bias": "+33.38%",
+      "household_share": "58.4%",
+      "memory_budget": "200",
+      "is_continual": true
+    },
+    {
+      "method": "EvoRoute-BR Experimental Candidate",
+      "key": "evoroute_br_candidate",
+      "overall_accuracy": "81.00%",
+      "balanced_accuracy": "81.00%",
+      "macro_f1": "81.96%",
+      "recency_bias": "+16.75%",
+      "household_share": "41.8%",
+      "memory_budget": "200",
+      "is_continual": true
+    },
+    {
+      "method": "EvoRoute-BR Calibrated Candidate",
+      "key": "evoroute_br_calibrated",
+      "overall_accuracy": "90.50%",
+      "balanced_accuracy": "90.50%",
+      "macro_f1": "90.62%",
+      "recency_bias": "+3.50%",
+      "household_share": "28.5%",
+      "memory_budget": "200",
+      "is_continual": true
+    },
+    {
+      "method": "Joint Upper Bound (Offline)",
+      "key": "joint",
+      "overall_accuracy": "93.75%",
+      "balanced_accuracy": "93.75%",
+      "macro_f1": "93.72%",
+      "recency_bias": "-0.50%",
+      "household_share": "24.5%",
+      "memory_budget": "Full Dataset",
+      "is_continual": false
+    }
+  ]
+}

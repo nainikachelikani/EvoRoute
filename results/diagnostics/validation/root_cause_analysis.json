@@ -1,0 +1,18 @@
+{
+    "diagnosis": "classifier_head_bias",
+    "recommendation": "Embeddings are separable, but MLP logits heavily favor the newest class. Decision-boundary rebalancing (EvoRoute-BR) is strongly justified.",
+    "metrics": {
+        "nearest_centroid_accuracy": 0.90375,
+        "classifier_accuracy": 0.6462500095367432,
+        "classifier_centroid_gap": 0.2574999904632569,
+        "raw_logit_gap": 2.279408812522888,
+        "normalized_logit_gap": 0.3184457410100295,
+        "std_all_logits": 7.157918976379395
+    },
+    "thresholds": {
+        "classifier_centroid_gap": 0.1,
+        "normalized_logit_gap": 0.25,
+        "embedding_threshold": 0.6
+    },
+    "timestamp": null
+}

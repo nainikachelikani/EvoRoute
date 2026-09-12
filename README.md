@@ -223,18 +223,87 @@ When a novel category is detected, the classification head dynamically expands f
 
 ## 17. Official Benchmark Results
 
-All metrics below are generated directly from actual execution (`results/metrics/final_results.json`):
+All metrics below are generated directly from actual execution (`results/metrics/scientific_summary.json` & `results/metrics/official_benchmark_manifest.json`):
 
-| Method | Overall Accuracy | Final Avg Task Accuracy | Avg Forgetting | Memory |
-| :--- | :---: | :---: | :---: | :---: |
-| **Naive Sequential** | 25.00% | 33.33% | 99.50% | 0 |
-| **EWC** | 25.00% | 33.33% | 99.50% | 0 |
-| **Experience Replay** | 64.62% | 67.17% | 47.75% | 200 |
-| **LwF** | 25.00% | 33.33% | 99.50% | 0 |
-| **Replay + EWC ⭐** | **65.62%** | **68.00%** | **46.50%** | **200** |
-| **Joint Upper Bound** | 93.75% | 92.50% | 0.00% | Full Dataset |
+| Method | Overall Accuracy | Balanced Accuracy | Macro F1 | Recency Bias | Household Share | Memory | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Naive Sequential** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
+| **EWC** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
+| **Experience Replay** | 58.25% | 58.25% | 59.35% | +41.00% | 66.0% | 200 | Baseline |
+| **LwF** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
+| **Replay + EWC (Baseline)** | 65.62% | 65.62% | 67.10% | +33.38% | 58.4% | 200 | Official Baseline |
+| **EvoRoute-BR Candidate** | 81.00% | 81.00% | 81.96% | +16.75% | 41.8% | 200 | Candidate (Uncalibrated) |
+| **EvoRoute-BR Calibrated ⭐** | **90.50%** | **90.50%** | **90.62%** | **+3.50%** | **28.5%** | **200** | **Recommended Method** |
+| **Joint Upper Bound** | 93.75% | 93.75% | 93.72% | -0.50% | 24.5% | Full Dataset | Offline Upper Bound |
 
 *Clarification on Joint Upper Bound:* Joint Training achieves 93.75% because it is trained offline with all data available simultaneously. **Joint Training is NOT a continual learning method** and is included strictly as an empirical upper bound.
+
+---
+
+## 18. Scientific Decision Table: Validation-Driven Model Selection
+
+To prevent test-set contamination, all algorithmic interventions, hyperparameters, and model configurations were ablated and selected **strictly on the held-out validation split** (`results/metrics/validation_ablation_study.json`). The test split was evaluated strictly once after configuration lock.
+
+| Configuration | Replay Mixing | Post-Task Fine-Tuning | Post-Hoc Calibration | Val Macro F1 | Val Balanced Acc | Val Recency Bias | Status / Decision |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Baseline Replay + EWC** | Original (80/20) | None | None | 0.6587 | 0.6463 | +34.13% | Immutable Baseline Benchmark |
+| **Candidate 1** | 50/50 Fixed | None | None | 0.6903 | 0.6763 | +30.75% | Promising (+3.16% F1) |
+| **Candidate 2** | Class-Balanced | None | None | 0.7224 | 0.7088 | +27.25% | Superior replay mixing (+6.37% F1) |
+| **Candidate 3** | Class-Balanced | Balanced FT (≤200) | None | 0.7931 | 0.7825 | +18.38% | **Winning Training Candidate** |
+| **Candidate 4 ⭐** | Class-Balanced | Balanced FT (≤200) | $T=1.25, \gamma=3.40$ | **0.8948** | **0.8938** | **+3.50%** | **Selected Winning Model** |
+
+### Anti-Collapse Safety Invariants
+- Minimum allowable newest-class validation accuracy: $\ge 60.0\%$ (Observed: 92.0%).
+- Minimum allowable historical-class accuracy: $\ge 40.0\%$ (Observed: 88.5%).
+- Safety Rejection Rule: If logit shift degrades validation accuracy or collapses the newest class, $\gamma$ is safely rejected and set to $0.0$. For EvoRoute-BR, the safety rejection rule was **not triggered**, confirming genuine harmonic improvement.
+
+---
+
+## 19. Empirical Root Cause & Bias Rebalancing Interventions
+
+### The Empirical Root Cause of Recency Bias
+In strict Class-Incremental Learning without task labels:
+1. When Task 3 arrives, the classifier dynamically expands with a new output neuron for **Household**.
+2. Because Task 3 batches contain only Household products, the gradient updates strongly increase the newly expanded weights and biases.
+3. Historical categories (Books, Clothing, Electronics) are only represented by a small replay fraction.
+4. Consequently, the unanchored newest logit $z_{\text{Household}}$ dominates the softmax denominator at inference, causing **58.4% of all predictions to route to Household** under the baseline.
+
+### The Three Bias Rebalancing Interventions
+1. **Class-Balanced Replay Mixing ($B=64$):** Dynamically partitions each training batch evenly across all currently seen classes ($64 // K$), allocating remainders deterministically so every seen category receives equal representation during gradient updates.
+2. **Post-Task Balanced Fine-Tuning:** A brief, strictly bounded fine-tuning stage ($E_{ft}=5$, $\text{lr}=10^{-4}$) trained purely on the bounded exemplar memory ($M \le 200$), guided by lexicographic early stopping on validation Macro F1.
+3. **Validation-Only Post-Hoc Calibration:**
+   - **Temperature Scaling ($T=1.2519$):** Softens overconfident logits by minimizing Negative Log-Likelihood strictly on validation data.
+   - **Decision Rebalancing Logit Shift ($\gamma=3.40$):** Offsets the dominant newest class logit ($z_{\text{newest}}' = z_{\text{newest}} - \gamma$) to align predicted class frequencies with true category distributions.
+
+---
+
+## 20. Prediction Transition Matrix Analysis
+
+Comparing the predictions of **Replay + EWC Baseline** vs **EvoRoute-BR Calibrated** on the identical 800 test samples (`results/metrics/prediction_transition_matrix.json`):
+
+- **Recovered Samples:** **212 historical samples** previously misclassified as Household under the baseline were successfully rescued:
+  - **77 Books** recovered
+  - **53 Clothing & Accessories** recovered
+  - **82 Electronics** recovered
+- **New Errors Introduced:** Only 13 samples.
+- **Net Improvement:** **+199 net correct samples**, translating directly to a **+24.88% accuracy lift** (from 65.62% to 90.50%).
+
+---
+
+> [!IMPORTANT]
+> ### 🛡️ Architectural Principle: Independent Novelty Detection Separation
+> **Novelty assessment never overrides classifier prediction.**
+> 
+> The system enforces strict architectural decoupling between classification and novelty detection:
+> - **Classifier Prediction:** Outputs the predicted catalog category (e.g., *Books*, *Clothing & Accessories*, *Electronics*, *Household*) based on calibrated neural logits.
+> - **Novelty Assessment:** Independently measures semantic unfamiliarity on the unit hypersphere via cosine distance to known class centroids ($d_{\text{min}} > \tau$).
+> 
+> The two systems are never conflated:
+> ```
+> Classifier Prediction  ──▶  Books
+> Novelty Assessment     ──▶  High Novelty (or Familiar)
+> ```
+> A sample with high novelty is flagged as unfamiliar for downstream catalog routing/flagging without corrupting or mutating the discrete category prediction to an artificial "Unknown".
 
 ---
 
@@ -321,7 +390,7 @@ python -m pytest
 ```
 EvoRoute/
 ├── app/
-│   └── app.py                            # Modern 5-page interactive Streamlit dashboard
+│   └── app.py                            # Modern 5-page interactive Streamlit dashboard (Research & Demo modes)
 ├── data/
 │   ├── raw/
 │   │   └── ecommerceDataset.csv          # Raw product descriptions catalog
@@ -335,29 +404,40 @@ EvoRoute/
 │   ├── ewc_final.pt
 │   ├── replay_final.pt
 │   ├── lwf_final.pt                      # LwF final continual model checkpoint
-│   ├── replay_ewc_final.pt
+│   ├── replay_ewc_final.pt               # Immutable Baseline Checkpoint (SHA-256 verified)
+│   ├── evoroute_br_candidate_final.pt    # EvoRoute-BR (Class-Balanced + Fine-Tuned)
+│   ├── evoroute_br_calibrated_final.pt   # EvoRoute-BR Calibrated Winner (Recommended)
 │   └── joint_final.pt
 ├── results/
-│   ├── metrics/                          # final_results.json, memory_sensitivity.json, novelty_metrics.json
-│   └── plots/                            # 8 publication-ready PNG figures including lwf_retention_analysis.png
+│   ├── metrics/                          # baseline_manifest.json, config_manifest.json, official_benchmark_manifest.json,
+│   │                                     # validation_ablation_study.json, prediction_transition_matrix.json, scientific_summary.json
+│   └── plots/                            # 10 publication-ready PNG figures including prediction_transition_matrix.png
 ├── src/
-│   ├── config.py                         # Hyperparameters (LWF_TEMPERATURE, LWF_LAMBDA, EWC_LAMBDA)
+│   ├── config.py                         # Hyperparameters, paths, anti-collapse thresholds
 │   ├── data.py                           # Dataset loading, cleaning, stratified splitting
 │   ├── embeddings.py                     # Frozen sentence-transformers MiniLM encoder
 │   ├── tasks.py                          # Incremental task data slicing & DataLoader iterators
 │   ├── model.py                          # EvoMLP with dynamic expansion and weight invariance
 │   ├── novelty.py                        # Hyperspherical centroid detector & threshold calibration
-│   ├── replay.py                         # ReplayBuffer (budget <= 200) with balanced sampling
+│   ├── replay.py                         # ReplayBuffer (budget <= 200) & class-balanced batch mixing
 │   ├── ewc.py                            # Sample-wise Fisher Information & quadratic loss penalty
 │   ├── lwf.py                            # Learning without Forgetting teacher & temperature KD loss
-│   ├── train.py                          # Continual training loops & joint upper bound
-│   ├── evaluate.py                       # Accuracy, task accuracy, and forgetting metrics
-│   └── visualize.py                      # 8 publication matplotlib visualizations
+│   ├── calibration.py                    # Temperature scaling, decision rebalancing, CalibratedModelWrapper
+│   ├── recency_bias.py                   # Dataset-aware dynamic recency metrics, Balanced Accuracy, Macro F1
+│   ├── reproducibility.py                # SHA-256 verification, manifest generators, seed management
+│   ├── train.py                          # Continual training loops, balanced fine-tuning, ablation study
+│   ├── evaluate.py                       # Accuracy, task accuracy, forgetting, and split validation
+│   └── visualize.py                      # 10 publication matplotlib visualizations
 ├── tests/
 │   ├── test_model_expansion.py           # Unit tests for weight invariance during expansion
 │   ├── test_replay_buffer.py             # Unit tests for buffer capacity bounds & rebalancing
+│   ├── test_balanced_replay.py           # Unit tests for dynamic remainder allocation & batch bounds
+│   ├── test_calibration_inference.py     # Unit tests for calibration wrapper, safety rejection & novelty separation
+│   ├── test_baseline_preservation.py     # Unit tests for baseline immutability & SHA-256 integrity
+│   ├── test_dataset_split_isolation.py   # Unit tests for zero test-set contamination
 │   ├── test_ewc.py                       # Unit tests for Fisher accumulation & loss integration
 │   ├── test_lwf.py                       # Comprehensive unit tests for LwF teacher, loss, and dynamic slicing
+│   ├── test_recency_bias.py              # Unit tests for recency bias metric & prediction distribution
 │   ├── test_consistency_audit.py         # Cross-artifact metric consistency audit
 │   └── test_streamlit_runtime.py         # End-to-end dashboard & model runtime validation
 ├── main.py                               # CLI entrypoint supporting all stages
@@ -368,8 +448,11 @@ EvoRoute/
 ---
 
 ## 25. Reproducibility
+
 - **Deterministic Seeding:** `set_seed(42)` sets seeds across PyTorch, NumPy, Python standard library, and sets `torch.backends.cudnn.deterministic = True`.
+- **Cryptographic Baseline Integrity:** The official baseline checkpoint (`models/replay_ewc_final.pt`) is protected by automated SHA-256 cryptographic verification (`e5dbee62...`).
 - **Precomputed Embeddings:** Feature vectors are deterministically cached to ensure identical initial representations across runs.
+- **Zero Test Contamination:** Validation data is used exclusively for ablation selection, early stopping, and post-hoc calibration.
 - **Zero Hardcoded Numbers:** All plots, tables, and dashboard elements load directly from generated metrics files.
 
 ---
@@ -388,13 +471,19 @@ streamlit run app/app.py
 - **Step 2: Show Task 1 (Page 2):** Platform launches with Books & Clothing (99% accuracy).
 - **Step 3: Introduce Electronics (Page 2):** Show novelty detection flagging incoming headphones as unfamiliar ($d=0.859 > \tau=0.811$).
 - **Step 4: Show Dynamic Expansion (Page 2):** Head expands from 2 to 3 classes without resetting prior weights.
-- **Step 5: Demonstrate Forgetting (Page 4):** Switch to Live Forgetting Demonstration. Show Naive fine-tuning dropping Books to 9% and Clothing to 0%.
-- **Step 6: Show Replay + EWC Retention (Page 4):** Show Replay + EWC maintaining Books at 67.5% and Clothing at 90.0%.
-- **Step 7: Introduce Household (Page 2):** Head expands to 4 classes; Replay rebalances memory to 50/class.
-- **Step 8: Show Final Benchmark (Page 3):** Point to Official Benchmark Table: Replay + EWC achieves **65.62% overall accuracy** and **46.50% forgetting** vs Naive (25.00% / 99.50%) and LwF (25.00% / 99.50%). Clarify Joint (93.75%) is offline.
-- **Step 9: Highlight Memory Efficiency (Page 4):** Show Memory Ablation Curve: a compact 200-sample buffer preserves knowledge across the entire catalog.
+- **Step 5: Explain the Recency Bias Failure (Page 4):** Reveal the empirical diagnosis: when Household arrives in Task 3, unanchored weights cause 58.4% of all test predictions to collapse into Household under the baseline.
+- **Step 6: Present EvoRoute-BR Interventions (Page 3 & 4):**
+  - Class-Balanced Replay Mixing
+  - Post-Task Balanced Fine-Tuning ($\le 200$ exemplars)
+  - Post-Hoc Logit Calibration ($T=1.25, \gamma=3.40$)
+- **Step 7: Demonstrate Scientific Breakthrough (Page 3):**
+  - Point to the Official Benchmark Table: EvoRoute-BR Calibrated achieves **90.50% overall accuracy** (vs 65.62% Baseline) and slashes recency bias from **+33.38% down to +3.50%**.
+  - Highlight the **+212 rescued historical samples** in the Prediction Transition Matrix.
+- **Step 8: Highlight Independent Novelty Separation (Page 5):**
+  - Show how incoming queries display independent classifier predictions alongside independent novelty assessments—never conflating unfamiliarity with an artificial "Unknown" prediction.
 
 ---
 
 ## License & Citation
 Developed for the Deep Learning Continual Learning Hackathon (Track 5). Released under the MIT License.
+

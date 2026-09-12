@@ -1,0 +1,55 @@
+{
+    "classifier_overall_accuracy": 0.6462500095367432,
+    "mean_newest_logit": 4.190943241119385,
+    "mean_max_old_logit": 1.9115344285964966,
+    "raw_logit_gap": 2.279408812522888,
+    "normalized_logit_gap": 0.3184457410100295,
+    "std_all_logits": 7.157918976379395,
+    "newest_class": "Household",
+    "per_class_head_stats": {
+        "Books": {
+            "weight_l2_norm": 2.418048858642578,
+            "weight_mean": -0.03438640013337135,
+            "weight_std": 0.21094301342964172,
+            "bias_value": -0.05688782408833504,
+            "mean_logit": -5.882979869842529,
+            "std_logit": 8.001492500305176,
+            "mean_probability": 0.12044038623571396,
+            "predicted_frequency": 0.11625,
+            "per_class_accuracy": 0.445
+        },
+        "Clothing & Accessories": {
+            "weight_l2_norm": 2.1886937618255615,
+            "weight_mean": -0.06894272565841675,
+            "weight_std": 0.18075326085090637,
+            "bias_value": -0.055760178714990616,
+            "mean_logit": -6.142513275146484,
+            "std_logit": 7.8323516845703125,
+            "mean_probability": 0.17023210227489471,
+            "predicted_frequency": 0.1775,
+            "per_class_accuracy": 0.7
+        },
+        "Electronics": {
+            "weight_l2_norm": 1.6811367273330688,
+            "weight_mean": -0.00792265310883522,
+            "weight_std": 0.1483815312385559,
+            "bias_value": 2.308274451934267e-05,
+            "mean_logit": -1.6887627840042114,
+            "std_logit": 2.6081955432891846,
+            "mean_probability": 0.11331487447023392,
+            "predicted_frequency": 0.115,
+            "per_class_accuracy": 0.455
+        },
+        "Household": {
+            "weight_l2_norm": 1.5753504037857056,
+            "weight_mean": 0.004103295970708132,
+            "weight_std": 0.13918215036392212,
+            "bias_value": 0.0226226057857275,
+            "mean_logit": 4.190943241119385,
+            "std_logit": 1.639623761177063,
+            "mean_probability": 0.5960126519203186,
+            "predicted_frequency": 0.59125,
+            "per_class_accuracy": 0.985
+        }
+    }
+}

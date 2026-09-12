@@ -1,0 +1,47 @@
+{
+    "nearest_centroid_accuracy": 0.90375,
+    "per_class_centroid_accuracy": {
+        "Books": 0.9,
+        "Clothing & Accessories": 0.965,
+        "Electronics": 0.88,
+        "Household": 0.87
+    },
+    "intra_class_mean_similarity": {
+        "Books": 0.3374519348144531,
+        "Clothing & Accessories": 0.5388914942741394,
+        "Electronics": 0.4035004675388336,
+        "Household": 0.3885461390018463
+    },
+    "centroid_similarity_matrix": [
+        [
+            0.9999998807907104,
+            0.19910039007663727,
+            0.26030588150024414,
+            0.3013966679573059
+        ],
+        [
+            0.19910039007663727,
+            1.0,
+            0.3816996216773987,
+            0.5747469067573547
+        ],
+        [
+            0.26030588150024414,
+            0.3816996216773987,
+            0.9999998807907104,
+            0.5814552307128906
+        ],
+        [
+            0.3013966679573059,
+            0.5747469067573547,
+            0.5814552307128906,
+            1.000000238418579
+        ]
+    ],
+    "categories": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+    ]
+}
