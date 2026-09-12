@@ -18,7 +18,9 @@ from src.config import (
     TRAIN_EMB_PATH,
     VAL_EMB_PATH,
     TEST_EMB_PATH,
-    EWC_LAMBDA
+    EWC_LAMBDA,
+    LWF_TEMPERATURE,
+    LWF_LAMBDA
 )
 from src.data import clean_dataset, split_data
 from src.embeddings import generate_and_save_embeddings, load_embeddings
@@ -125,6 +127,7 @@ def print_official_benchmark_table(all_results: dict):
         ("naive", "Naive Sequential", "0"),
         ("ewc", "EWC", "0"),
         ("replay", "Experience Replay", "200"),
+        ("lwf", "LwF ⭐", "0"),
         ("replay_ewc", "Replay + EWC ⭐", "200"),
         ("joint", "Joint Upper Bound", "Full Dataset"),
     ]
@@ -138,16 +141,25 @@ def print_official_benchmark_table(all_results: dict):
     logger.info("="*90 + "\n")
 
 
-def stage_train_and_evaluate(ewc_lambda: float = EWC_LAMBDA):
+def stage_train_and_evaluate(
+    ewc_lambda: float = EWC_LAMBDA,
+    lwf_temperature: float = LWF_TEMPERATURE,
+    lwf_lambda: float = LWF_LAMBDA
+):
     """Stage 3 & 4: Train models across all methods, evaluate, and save metrics."""
     logger.info(">>> Executing Stage: TRAIN & EVALUATE <<<")
     
-    methods_to_run = ["naive", "replay", "replay_ewc", "ewc"]
+    methods_to_run = ["naive", "ewc", "replay", "lwf", "replay_ewc"]
     all_results = {}
 
     for method in methods_to_run:
         logger.info(f"\nRunning continual training experiment: {method}")
-        res = train_continual_method(method=method, ewc_lambda=ewc_lambda)
+        res = train_continual_method(
+            method=method,
+            ewc_lambda=ewc_lambda,
+            lwf_temperature=lwf_temperature,
+            lwf_lambda=lwf_lambda
+        )
         all_results[method] = res
 
     # Run Joint Upper Bound
@@ -239,6 +251,18 @@ def main():
         help="EWC regularization strength lambda (default: 100.0)"
     )
     parser.add_argument(
+        "--lwf-temperature",
+        type=float,
+        default=LWF_TEMPERATURE,
+        help="LwF distillation temperature T (default: 2.0)"
+    )
+    parser.add_argument(
+        "--lwf-lambda",
+        type=float,
+        default=LWF_LAMBDA,
+        help="LwF distillation loss weighting coefficient (default: 1.0)"
+    )
+    parser.add_argument(
         "--force-embeddings",
         action="store_true",
         help="Force recomputation of text embeddings."
@@ -251,7 +275,11 @@ def main():
     elif args.stage == "embeddings":
         stage_embeddings(force=args.force_embeddings)
     elif args.stage in ["train", "evaluate"]:
-        stage_train_and_evaluate(ewc_lambda=args.ewc_lambda)
+        stage_train_and_evaluate(
+            ewc_lambda=args.ewc_lambda,
+            lwf_temperature=args.lwf_temperature,
+            lwf_lambda=args.lwf_lambda
+        )
     elif args.stage == "visualize":
         stage_visualize()
     elif args.stage == "demo":
@@ -259,7 +287,11 @@ def main():
     elif args.stage == "all":
         stage_preprocess()
         stage_embeddings(force=args.force_embeddings)
-        results, mem_study, nov_plot_data = stage_train_and_evaluate(ewc_lambda=args.ewc_lambda)
+        results, mem_study, nov_plot_data = stage_train_and_evaluate(
+            ewc_lambda=args.ewc_lambda,
+            lwf_temperature=args.lwf_temperature,
+            lwf_lambda=args.lwf_lambda
+        )
         stage_visualize(results, mem_study, nov_plot_data)
         logger.info("\n========================================================")
         logger.info("   EvoRoute Research Pipeline Completed Successfully!   ")

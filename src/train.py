@@ -18,6 +18,8 @@ from src.config import (
     REPLAY_MEMORY_BUDGET,
     REPLAY_SAMPLE_RATIO,
     EWC_LAMBDA,
+    LWF_TEMPERATURE,
+    LWF_LAMBDA,
     TASK_CLASSES,
     TASK_CUMULATIVE_CLASSES,
     MODELS_DIR,
@@ -27,6 +29,7 @@ from src.model import EvoMLP
 from src.tasks import get_task_data, get_task_loader, get_joint_loader
 from src.replay import ReplayBuffer
 from src.ewc import EWC
+from src.lwf import LwF
 from src.evaluate import (
     evaluate_model_on_classes,
     evaluate_task_accuracies,
@@ -57,11 +60,12 @@ def train_single_task(
     epochs: int = EPOCHS_PER_TASK,
     replay_buffer: ReplayBuffer = None,
     ewc: EWC = None,
+    lwf: LwF = None,
     device: str = DEVICE
 ):
     """
     Trains model on a single task.
-    Optionally mixes replay exemplars and adds EWC quadratic penalty.
+    Optionally mixes replay exemplars, adds EWC quadratic penalty, or adds LwF distillation loss.
     """
     model.train()
     for epoch in range(epochs):
@@ -84,10 +88,13 @@ def train_single_task(
             logits = model(inputs)
             cls_loss = criterion(logits, targets)
 
-            # Add EWC penalty if active
+            # Add continual learning regularization loss
             if ewc is not None:
                 penalty_loss = ewc.penalty(model)
                 total_loss = cls_loss + penalty_loss
+            elif lwf is not None and lwf.has_teacher:
+                kd_loss = lwf.compute_distillation_loss(student_logits=logits, inputs=inputs)
+                total_loss = cls_loss + lwf.lwf_lambda * kd_loss
             else:
                 total_loss = cls_loss
 
@@ -106,6 +113,8 @@ def train_continual_method(
     method: str = "replay_ewc",
     memory_budget: int = REPLAY_MEMORY_BUDGET,
     ewc_lambda: float = EWC_LAMBDA,
+    lwf_temperature: float = LWF_TEMPERATURE,
+    lwf_lambda: float = LWF_LAMBDA,
     epochs: int = EPOCHS_PER_TASK,
     device: str = DEVICE
 ) -> Dict[str, Any]:
@@ -114,8 +123,9 @@ def train_continual_method(
     
     Supported methods:
     - 'naive': Sequential fine-tuning, no replay, no EWC (exhibits catastrophic forgetting).
-    - 'replay': Experience Replay bounded by memory budget.
     - 'ewc': Elastic Weight Consolidation with Fisher regularization.
+    - 'replay': Experience Replay bounded by memory budget.
+    - 'lwf': Learning without Forgetting via frozen teacher distillation (exemplar-free).
     - 'replay_ewc': Combined Replay + EWC (primary proposed method).
     """
     set_seed(RANDOM_SEED)
@@ -132,6 +142,10 @@ def train_continual_method(
     ewc = None
     if "ewc" in method.lower():
         ewc = EWC(model, ewc_lambda=ewc_lambda, device=device)
+
+    lwf = None
+    if method.lower() == "lwf":
+        lwf = LwF(temperature=lwf_temperature, lwf_lambda=lwf_lambda, device=device)
 
     # Performance matrix: R[i, j] = accuracy on task j after training task i
     R = np.zeros((3, 3))
@@ -162,10 +176,11 @@ def train_continual_method(
             epochs=epochs,
             replay_buffer=replay_buffer if (task_id > 1 and replay_buffer is not None) else None,
             ewc=ewc if (task_id > 1 and ewc is not None) else None,
+            lwf=lwf if (task_id > 1 and lwf is not None) else None,
             device=device
         )
 
-        # Post-task actions: update replay buffer and EWC Fisher matrix
+        # Post-task actions: update replay buffer, EWC Fisher matrix, or LwF teacher
         if replay_buffer is not None:
             replay_buffer.add_examples(train_embs, train_lbls)
             replay_buffer.log_memory_composition(task_id=task_id)
@@ -174,6 +189,14 @@ def train_continual_method(
             # Estimate Fisher Information on current task using mathematically exact sample gradients
             task_eval_loader = get_task_loader(task_id=task_id, split="train", cumulative=False, shuffle=False)
             ewc.compute_fisher(task_eval_loader, num_samples=500)
+
+        if lwf is not None:
+            # Snapshot frozen teacher for knowledge distillation in subsequent tasks
+            lwf.set_teacher(model)
+
+        # Save checkpoint after each task
+        task_checkpoint_path = MODELS_DIR / f"{method}_task{task_id}.pt"
+        torch.save(model.state_dict(), task_checkpoint_path)
 
         # Evaluate performance on test set for all seen tasks
         acc_dict = evaluate_task_accuracies(model, current_task=task_id, split="test", device=device)

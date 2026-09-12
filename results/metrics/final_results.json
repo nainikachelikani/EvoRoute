@@ -83,6 +83,90 @@
         "memory_size": 0,
         "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\naive_final.pt"
     },
+    "ewc": {
+        "method": "ewc",
+        "overall_accuracy": 0.25,
+        "final_avg_task_accuracy": 0.3333333333333333,
+        "final_average_accuracy": 0.25,
+        "final_accuracy": 0.25,
+        "average_forgetting": 0.995,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.99,
+                "Task_2": 1.0
+            },
+            "average_forgetting": 0.995
+        },
+        "final_per_class": {
+            "Books": 0.0,
+            "Clothing & Accessories": 0.0,
+            "Electronics": 0.0,
+            "Household": 1.0
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.34833333333333333,
+                "per_class_accuracy": {
+                    "Books": 0.045,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0225,
+                    "Task_2": 1.0
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.25,
+                "per_class_accuracy": {
+                    "Books": 0.0,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 0.0,
+                    "Household": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0,
+                    "Task_2": 0.0,
+                    "Task_3": 1.0
+                },
+                "memory_size": 0
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.0225,
+                1.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0
+            ]
+        ],
+        "memory_size": 0,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\ewc_final.pt"
+    },
     "replay": {
         "method": "replay",
         "overall_accuracy": 0.64625,
@@ -167,6 +251,90 @@
         "memory_size": 200,
         "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_final.pt"
     },
+    "lwf": {
+        "method": "lwf",
+        "overall_accuracy": 0.25,
+        "final_avg_task_accuracy": 0.3333333333333333,
+        "final_average_accuracy": 0.25,
+        "final_accuracy": 0.25,
+        "average_forgetting": 0.995,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.99,
+                "Task_2": 1.0
+            },
+            "average_forgetting": 0.995
+        },
+        "final_per_class": {
+            "Books": 0.0,
+            "Clothing & Accessories": 0.0,
+            "Electronics": 0.0,
+            "Household": 1.0
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.3333333333333333,
+                "per_class_accuracy": {
+                    "Books": 0.0,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0,
+                    "Task_2": 1.0
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.25,
+                "per_class_accuracy": {
+                    "Books": 0.0,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 0.0,
+                    "Household": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0,
+                    "Task_2": 0.0,
+                    "Task_3": 1.0
+                },
+                "memory_size": 0
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0
+            ]
+        ],
+        "memory_size": 0,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\lwf_final.pt"
+    },
     "replay_ewc": {
         "method": "replay_ewc",
         "overall_accuracy": 0.65625,
@@ -250,90 +418,6 @@
         ],
         "memory_size": 200,
         "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_ewc_final.pt"
-    },
-    "ewc": {
-        "method": "ewc",
-        "overall_accuracy": 0.25,
-        "final_avg_task_accuracy": 0.3333333333333333,
-        "final_average_accuracy": 0.25,
-        "final_accuracy": 0.25,
-        "average_forgetting": 0.995,
-        "forgetting": {
-            "per_task_forgetting": {
-                "Task_1": 0.99,
-                "Task_2": 1.0
-            },
-            "average_forgetting": 0.995
-        },
-        "final_per_class": {
-            "Books": 0.0,
-            "Clothing & Accessories": 0.0,
-            "Electronics": 0.0,
-            "Household": 1.0
-        },
-        "task_history": [
-            {
-                "task_id": 1,
-                "overall_accuracy": 0.99,
-                "per_class_accuracy": {
-                    "Books": 0.99,
-                    "Clothing & Accessories": 0.99
-                },
-                "seen_task_accuracies": {
-                    "Task_1": 0.99
-                },
-                "memory_size": 0
-            },
-            {
-                "task_id": 2,
-                "overall_accuracy": 0.34833333333333333,
-                "per_class_accuracy": {
-                    "Books": 0.045,
-                    "Clothing & Accessories": 0.0,
-                    "Electronics": 1.0
-                },
-                "seen_task_accuracies": {
-                    "Task_1": 0.0225,
-                    "Task_2": 1.0
-                },
-                "memory_size": 0
-            },
-            {
-                "task_id": 3,
-                "overall_accuracy": 0.25,
-                "per_class_accuracy": {
-                    "Books": 0.0,
-                    "Clothing & Accessories": 0.0,
-                    "Electronics": 0.0,
-                    "Household": 1.0
-                },
-                "seen_task_accuracies": {
-                    "Task_1": 0.0,
-                    "Task_2": 0.0,
-                    "Task_3": 1.0
-                },
-                "memory_size": 0
-            }
-        ],
-        "accuracy_matrix": [
-            [
-                0.99,
-                0.0,
-                0.0
-            ],
-            [
-                0.0225,
-                1.0,
-                0.0
-            ],
-            [
-                0.0,
-                0.0,
-                1.0
-            ]
-        ],
-        "memory_size": 0,
-        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\ewc_final.pt"
     },
     "joint": {
         "method": "joint",

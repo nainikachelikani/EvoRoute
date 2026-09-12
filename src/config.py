@@ -97,6 +97,10 @@ REPLAY_SAMPLE_RATIO = 0.2    # 80% new task data, 20% replay buffer
 # Elastic Weight Consolidation (EWC)
 EWC_LAMBDA = 100.0           # Configurable EWC quadratic penalty strength
 
+# Learning without Forgetting (LwF)
+LWF_TEMPERATURE = 2.0        # Temperature for softening probability distributions
+LWF_LAMBDA = 1.0             # Weighting coefficient for knowledge distillation loss
+
 # Novelty Detection Calibration
 NOVELTY_CALIBRATION_PERCENTILE = 95.0
 

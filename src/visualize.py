@@ -38,6 +38,7 @@ METHOD_COLORS = {
     "naive": "#E63946",       # Red
     "ewc": "#F4A261",         # Orange
     "replay": "#2A9D8F",      # Teal
+    "lwf": "#8338EC",         # Violet / Purple (Distillation)
     "replay_ewc": "#1D3557",  # Deep Navy Blue (Proposed)
     "joint": "#457B9D"        # Slate Blue (Upper Bound)
 }
@@ -46,6 +47,7 @@ METHOD_LABELS = {
     "naive": "Naive Sequential",
     "ewc": "EWC",
     "replay": "Experience Replay (200)",
+    "lwf": "LwF (Distillation)",
     "replay_ewc": "Replay + EWC (Proposed)",
     "joint": "Joint Training (Upper Bound)"
 }
@@ -85,8 +87,8 @@ def plot_accuracy_across_tasks(results_data: Dict[str, Any], save_path: Path = N
 
 def plot_catastrophic_forgetting(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 2: Catastrophic Forgetting Comparison across methods."""
-    fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
-    methods = [m for m in ["naive", "ewc", "replay", "replay_ewc"] if m in results_data]
+    fig, ax = plt.subplots(figsize=(8.5, 5), dpi=300)
+    methods = [m for m in ["naive", "ewc", "lwf", "replay", "replay_ewc"] if m in results_data]
     forgetting_vals = []
     labels = []
     colors = []
@@ -120,12 +122,12 @@ def plot_catastrophic_forgetting(results_data: Dict[str, Any], save_path: Path =
 
 def plot_per_class_accuracy(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 3: Per-Class Accuracy after final task."""
-    fig, ax = plt.subplots(figsize=(9, 5.5), dpi=300)
-    methods = [m for m in ["naive", "ewc", "replay", "replay_ewc", "joint"] if m in results_data]
+    fig, ax = plt.subplots(figsize=(9.5, 5.5), dpi=300)
+    methods = [m for m in ["naive", "ewc", "lwf", "replay", "replay_ewc", "joint"] if m in results_data]
     categories = CATEGORIES
 
     x = np.arange(len(categories))
-    width = 0.15
+    width = 0.14
 
     for idx, m in enumerate(methods):
         per_class = results_data[m].get("final_per_class", {})
@@ -278,6 +280,49 @@ def plot_knowledge_retention_heatmap(results_data: Dict[str, Any], save_path: Pa
     logger.info(f"Saved Plot 6: {save_path}")
 
 
+def plot_lwf_retention_analysis(results_data: Dict[str, Any], save_path: Path = None):
+    """
+    Plot 7: LwF Retention Analysis comparing Naive vs LwF vs Replay + EWC across Tasks 1, 2, and 3.
+    Demonstrates the retention characteristics of knowledge distillation against baseline & replay.
+    """
+    fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+    stages = ["Task 1\n(Books + Cloth)", "Task 2\n(+Electronics)", "Task 3\n(+Household)"]
+    x = np.arange(len(stages))
+
+    methods_to_compare = [
+        ("naive", "Naive Sequential", "#E63946", "o-"),
+        ("lwf", "LwF (Distillation)", "#8338EC", "s-"),
+        ("replay_ewc", "Replay + EWC (Proposed)", "#1D3557", "^-")
+    ]
+
+    for m_key, m_label, color, fmt in methods_to_compare:
+        if m_key in results_data:
+            hist = results_data[m_key].get("task_history", [])
+            accs = [h["overall_accuracy"] * 100 for h in hist]
+            if len(accs) == len(stages):
+                ax.plot(x, accs, fmt, color=color, linewidth=2.5, markersize=8, label=m_label)
+                for i, txt in enumerate(accs):
+                    offset = 8 if m_key != "lwf" else -14
+                    ax.annotate(f"{txt:.1f}%", (x[i], txt), textcoords="offset points", xytext=(0, offset),
+                                ha='center', fontweight="bold", fontsize=9, color=color)
+
+    ax.set_title("LwF Retention Analysis: Distillation vs Naive vs Replay + EWC", fontweight="bold", pad=12)
+    ax.set_xlabel("Continual Learning Stage")
+    ax.set_ylabel("Overall Accuracy (%)")
+    ax.set_xticks(x)
+    ax.set_xticklabels(stages)
+    ax.set_ylim(0, 110)
+    ax.legend(frameon=True, loc="lower left")
+    ax.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "lwf_retention_analysis.png"
+    fig.savefig(save_path, bbox_inches="tight")
+    plt.close(fig)
+    logger.info(f"Saved Plot 7: {save_path}")
+
+
 def generate_all_plots(results_data: Dict[str, Any], memory_data: Dict[str, float] = None, novelty_data: Dict[str, Any] = None):
     """Generates and saves all required plots."""
     plot_accuracy_across_tasks(results_data)
@@ -287,9 +332,11 @@ def generate_all_plots(results_data: Dict[str, Any], memory_data: Dict[str, floa
         plot_memory_vs_accuracy(memory_data)
         plot_memory_vs_forgetting(memory_data)
     plot_knowledge_retention_heatmap(results_data)
+    plot_lwf_retention_analysis(results_data)
     if novelty_data is not None and "known_distances" in novelty_data:
         plot_novelty_distribution(
             novelty_data["known_distances"],
             novelty_data["unknown_distances"],
             novelty_data["threshold"]
         )
+

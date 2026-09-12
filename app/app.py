@@ -112,7 +112,7 @@ st.markdown("""
 def load_all_models_and_detector():
     """Caches loaded neural network models and novelty detector."""
     models = {}
-    methods = ["replay_ewc", "naive", "replay", "ewc", "joint"]
+    methods = ["replay_ewc", "naive", "replay", "lwf", "ewc", "joint"]
     for m in methods:
         path = MODELS_DIR / f"{m}_final.pt"
         if path.exists():
@@ -385,6 +385,8 @@ elif page == "🔄 Evolution Simulation ⭐":
             det2 = detector.detect(emb2)
             st.success(f"Status: **{det2['decision']}** (Distance: {det2['distance']:.3f} <= {det2['threshold']:.3f})")
 
+        st.caption("🔬 *LwF Mechanism:* Task 1 converges with standard Cross-Entropy. A frozen deep copy is snapshotted as the **Teacher Model** for Task 2 distillation.")
+
     elif sim_stage.startswith("Stage 2"):
         st.warning("⚡ **Stage 2: Tech Expansion Stream (Task 2 Arrival)**")
         test_tech = "Sony WH-1000XM5 Wireless Noise Canceling Over-Ear Headphones with Auto NC Optimizer"
@@ -410,7 +412,10 @@ elif page == "🔄 Evolution Simulation ⭐":
             st.markdown("#### 3. RETAIN")
             st.write("- **Replay Memory:** Retains 100 Books + 100 Clothing.")
             st.write("- **EWC Penalty:** Shields Task 1 parameter trajectories.")
+            st.write("- **LwF Alternative:** Frozen 2-class Teacher distills Books & Clothing outputs.")
             st.success("Result: Electronics assimilated with minimal forgetting!")
+
+        st.caption("🔬 *LwF Mechanism:* Teacher freezes Task 1 knowledge. Once Task 2 finishes, Teacher is updated to the 3-class snapshot for Task 3.")
 
     elif sim_stage.startswith("Stage 3"):
         st.warning("🏠 **Stage 3: Home Expansion Stream (Task 3 Arrival)**")
@@ -437,6 +442,7 @@ elif page == "🔄 Evolution Simulation ⭐":
             st.markdown("#### 3. RETAIN")
             st.write("- **Memory Rebalancing:** Bounded 200 budget → 50/class.")
             st.write("- **EWC Penalty:** Accumulated Fisher protects Tasks 1 & 2.")
+            st.write("- **LwF Distillation:** Distills Tasks 1 & 2 classes on Task 3 data.")
             st.success("Result: All 4 categories retained simultaneously!")
 
     elif sim_stage.startswith("Stage 4"):
@@ -498,6 +504,7 @@ elif page == "📊 Benchmark Results ⭐":
             ("naive", "Naive Sequential", "0"),
             ("ewc", "EWC", "0"),
             ("replay", "Experience Replay", "200"),
+            ("lwf", "LwF ⭐ NEW", "0"),
             ("replay_ewc", "Replay + EWC ⭐", "200"),
             ("joint", "Joint Upper Bound (Offline)", "Full Dataset"),
         ]
@@ -520,6 +527,17 @@ elif page == "📊 Benchmark Results ⭐":
 
         benchmark_df = pd.DataFrame(table_rows)
         st.dataframe(benchmark_df, use_container_width=True, hide_index=True)
+
+        st.markdown("""
+        <div class="callout-box">
+        <b>LwF — Learning without Forgetting:</b><br>
+        Uses a frozen teacher model and temperature-scaled knowledge distillation ($T=2.0, \lambda=1.0$) 
+        to preserve old knowledge without storing old product examples (<b>0 Exemplars</b>).<br>
+        <i>Strict CIL Empirical Insight:</i> In class-incremental learning where new task batches contain exclusively novel class samples, 
+        evaluating the teacher on new classes causes unanchored historical logits and strong recency bias (<b>25.00% accuracy, 99.50% forgetting</b>). 
+        This empirically demonstrates why replay memory is essential for anchoring multi-class decision boundaries in strict CIL.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
         <div class="callout-box">
@@ -604,16 +622,28 @@ elif page == "📈 Experimental Analysis":
 
     st.markdown("---")
 
-    # 6 Publication Figures with Titles, Labels, and Interpretations
+    # 7 Publication Figures with Titles, Labels, and Interpretations
     st.subheader("Publication-Ready Visualizations & Ablations")
 
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    st.markdown("""
+    <div class="callout-box">
+    <b>Continual Learning Defense Paradigms:</b><br>
+    • <b>Naive Sequential:</b> No protection (catastrophic weight overwrite)<br>
+    • <b>LwF (Baseline):</b> Knowledge Distillation (exemplar-free teacher output regularization)<br>
+    • <b>Experience Replay:</b> Stored Examples (anchors multi-class decision boundaries)<br>
+    • <b>EWC:</b> Parameter Protection (quadratic Fisher penalty on important weights)<br>
+    • <b>Replay + EWC ⭐ (Proposed):</b> Decision Boundary Anchoring + Parameter Protection
+    </div>
+    """, unsafe_allow_html=True)
+
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "1. Accuracy Across Tasks",
         "2. Catastrophic Forgetting",
         "3. Per-Class Accuracy",
         "4. Memory vs Accuracy",
         "5. Memory vs Forgetting",
-        "6. Knowledge Retention Heatmap"
+        "6. Knowledge Retention Heatmap",
+        "7. LwF Retention Analysis ⭐ NEW"
     ])
 
     with tab1:
@@ -651,6 +681,12 @@ elif page == "📈 Experimental Analysis":
         if p6.exists():
             st.image(str(p6), use_container_width=True)
             st.info("**Interpretation:** The dual heatmap starkly illustrates weight overwrite in Naive sequential learning (left) versus stable knowledge retention in Replay + EWC (right) after Tasks 1, 2, and 3.")
+
+    with tab7:
+        p7 = RESULTS_PLOTS_DIR / "lwf_retention_analysis.png"
+        if p7.exists():
+            st.image(str(p7), use_container_width=True)
+            st.info("**Interpretation:** LwF vs Naive vs Replay + EWC across continual learning stages. While LwF regularizes historical class outputs via distillation on new samples, without exemplar replay it still collapses under strict CIL recency bias (25.00% accuracy, 99.50% forgetting), proving why physical replay exemplars are vital for multi-class decision boundary stability.")
 
 
 # =============================================================================

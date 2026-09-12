@@ -119,12 +119,59 @@ The categories arrive sequentially in three distinct tasks:
 1. **Naive Sequential Fine-Tuning:** Standard backpropagation on incoming task data without memory or regularization baselines.
 2. **Elastic Weight Consolidation (EWC):** Prior-task parameter protection via Fisher Information quadratic penalty.
 3. **Experience Replay:** Bounded memory buffer (max 200 exemplars) with centroid-distance exemplar sampling.
-4. **Replay + EWC ⭐ (Proposed):** Dual retention mechanism combining exemplar replay with Fisher regularization.
-5. **Joint Training Upper Bound:** Offline upper-bound baseline trained simultaneously across all 4 categories.
+4. **Learning without Forgetting (LwF) ⭐ NEW:** Exemplar-free continual learning baseline using a frozen teacher model and temperature-scaled knowledge distillation.
+5. **Replay + EWC ⭐ (Proposed Method):** Dual retention mechanism combining exemplar replay with Fisher regularization.
+6. **Joint Training Upper Bound:** Offline upper-bound baseline trained simultaneously across all 4 categories.
+
+### Continual Learning Paradigm Comparison
+
+| Method | Old Examples Stored | Parameter Protection | Knowledge Distillation | Status |
+| :--- | :---: | :---: | :---: | :--- |
+| **Naive Sequential** | ❌ | ❌ | ❌ | Baseline |
+| **EWC** | ❌ | ✅ | ❌ | Baseline |
+| **Experience Replay** | ✅ | ❌ | ❌ | Baseline |
+| **LwF** | ❌ | ❌ | ✅ | Baseline |
+| **Replay + EWC ⭐** | ✅ | ✅ | ❌ | **Proposed EvoRoute Method** |
+
+> **Crucial Distinction:** **Replay + EWC remains EvoRoute's proposed method.** LwF is evaluated strictly as an exemplar-free baseline.
 
 ---
 
-## 11. Experience Replay
+## 11. Learning without Forgetting (LwF)
+
+### Problem & Motivation
+Sequential fine-tuning completely overwrites previously acquired feature representations because backpropagation optimizes solely for current task objectives. In strict Class-Incremental Learning (CIL) without old product exemplars, an alternative defense is **Knowledge Distillation**.
+
+### EvoRoute LwF Solution
+```
+        Previous Model Snapshot
+                  ↓
+          [Frozen Teacher] (requires_grad = False, eval mode)
+                  ↓
+          Soft Probability Targets (over historical classes only)
+                  ↓
+         Knowledge Distillation (KL Divergence with Temperature T)
+                  ↓
+       [Adaptive Student Model] (learns new classes + distills old)
+```
+
+### Mathematical Formulation
+During Task $t$ ($t \ge 2$), the total loss is defined as:
+$$\mathcal{L}_{total} = \mathcal{L}_{CE} + \lambda \mathcal{L}_{KD}$$
+
+Where:
+- $\mathcal{L}_{CE}$ is standard cross-entropy loss over incoming new task labels:
+  $$\mathcal{L}_{CE} = -\sum_{i} \log p(y_i \mid x_i, \theta_{student})$$
+- $\mathcal{L}_{KD}$ is the temperature-scaled Kullback-Leibler (KL) divergence computed strictly over previously learned classes $C_{old}$:
+  $$\mathcal{L}_{KD} = T^2 \cdot D_{KL}\left( \sigma\left(\frac{z_{teacher}^{[:C_{old}]}}{T}\right) \,\Big\|\, \sigma\left(\frac{z_{student}^{[:C_{old}]}}{T}\right) \right)$$
+- $T = 2.0$ is the distillation temperature that softens probability distributions over old classes.
+- $\lambda = 1.0$ is the distillation regularization weight (configurable via `--lwf-lambda`).
+- **Dynamic Head Slicing:** Because the student has $C_{new} > C_{old}$ outputs, only the first $C_{old}$ logits of the student participate in distillation. The novel class head is strictly excluded from $\mathcal{L}_{KD}$.
+- **Exemplar-Free:** LwF operates with **0 exemplars in memory**.
+
+---
+
+## 12. Experience Replay
 - **Strict Capacity Constraint:** Memory budget $M \le 200$ embeddings total.
 - **Class-Balanced Allocation:** Memory partitions dynamically across seen classes:
   $$|\mathcal{M}_c| = \left\lfloor \frac{M}{|\mathcal{C}_{seen}|} \right\rfloor$$
@@ -134,7 +181,7 @@ The categories arrive sequentially in three distinct tasks:
 
 ---
 
-## 12. Elastic Weight Consolidation (EWC)
+## 13. Elastic Weight Consolidation (EWC)
 EWC estimates the diagonal of the empirical Fisher Information Matrix $F$ using sample-wise squared gradients of log-likelihood:
 $$F_j = \frac{1}{N} \sum_{i=1}^N \left( \frac{\partial \log p(y_i \mid x_i, \theta)}{\partial \theta_j} \right)^2$$
 During subsequent tasks, an additional quadratic penalty discourages movement along high-curvature parameter directions:
@@ -143,7 +190,7 @@ EvoRoute automatically aligns prior Fisher matrices with expanded output layers 
 
 ---
 
-## 13. Dynamic Output Layer Expansion
+## 14. Dynamic Output Layer Expansion
 When a novel category is detected, the classification head dynamically expands from $C \to C+1$:
 1. A new `nn.Linear(128, C+1)` layer is instantiated.
 2. Existing weight rows and bias terms for previously learned categories ($0 \le c < C$) are directly copied into the new head.
@@ -153,7 +200,7 @@ When a novel category is detected, the classification head dynamically expands f
 
 ---
 
-## 14. Novelty Detection
+## 15. Novelty Detection
 - **Centroid Distance:** For known classes $\mathcal{C}_{seen}$, normalized centroids $\mu_c$ are maintained. An incoming product $e$ is tested via:
   $$d_{min}(e) = \min_{c \in \mathcal{C}_{seen}} (1 - e \cdot \mu_c)$$
 - **Threshold Calibration:** $\tau$ is calibrated dynamically at the 95th percentile of distances across known validation samples.
@@ -163,7 +210,7 @@ When a novel category is detected, the classification head dynamically expands f
 
 ---
 
-## 15. Primary Evaluation Metrics
+## 16. Primary Evaluation Metrics
 1. **PRIMARY METRIC 1: Overall Final Accuracy:** Accuracy evaluated across all test samples after completing final Task 3.
 2. **PRIMARY METRIC 2: Final Average Forgetting:**
    $$F = \frac{1}{T-1} \sum_{k=1}^{T-1} \left( \max_{l < T} R(l, k) - R(T, k) \right)$$
@@ -174,7 +221,7 @@ When a novel category is detected, the classification head dynamically expands f
 
 ---
 
-## 16. Official Benchmark Results
+## 17. Official Benchmark Results
 
 All metrics below are generated directly from actual execution (`results/metrics/final_results.json`):
 
@@ -183,6 +230,7 @@ All metrics below are generated directly from actual execution (`results/metrics
 | **Naive Sequential** | 25.00% | 33.33% | 99.50% | 0 |
 | **EWC** | 25.00% | 33.33% | 99.50% | 0 |
 | **Experience Replay** | 64.62% | 67.17% | 47.75% | 200 |
+| **LwF** | 25.00% | 33.33% | 99.50% | 0 |
 | **Replay + EWC ⭐** | **65.62%** | **68.00%** | **46.50%** | **200** |
 | **Joint Upper Bound** | 93.75% | 92.50% | 0.00% | Full Dataset |
 
@@ -190,7 +238,7 @@ All metrics below are generated directly from actual execution (`results/metrics
 
 ---
 
-## 17. Memory Sensitivity Ablation Study
+## 18. Memory Sensitivity Ablation Study
 
 Evaluated on Experience Replay across memory budgets of 0, 50, 100, and 200 exemplars (`results/metrics/memory_sensitivity.json`):
 
@@ -203,30 +251,36 @@ Evaluated on Experience Replay across memory budgets of 0, 50, 100, and 200 exem
 
 ---
 
-## 18. Key Scientific Findings
+## 19. Key Scientific Findings
 1. **Severe Catastrophic Forgetting in Naive Baseline:** Fine-tuning naively causes the network to predict only the newest class (Household), dropping historical accuracy to 0% (99.50% forgetting).
 2. **Why Standalone EWC Fails in Class-Incremental Learning:** 
    Under CIL without task oracles, newly added output heads lack historical Fisher penalties. Incoming batches only contain the new class, causing the unregularized newest output logits to dominate all predictions.
-3. **Synergistic Power of Replay + EWC:** 
+3. **Why Exemplar-Free LwF Fails in Strict CIL:**
+   LwF regularizes old class logits via a frozen teacher evaluated solely on incoming new-task samples. Because no historical exemplars are present, the teacher outputs uninformative probabilities on out-of-distribution inputs, and the student suffers from severe recency bias towards the newly expanded output head (25.00% accuracy, 99.50% forgetting).
+4. **Synergistic Power of Replay + EWC (Proposed Best):** 
    Experience Replay anchors the multi-class decision boundaries, allowing EWC to regularize parameter trajectories. Replay + EWC achieves the highest overall accuracy (**65.62%**), highest task accuracy (**68.00%**), and lowest catastrophic forgetting (**46.50%**).
 
 ---
 
-## 19. Limitations
-1. **Novelty Semantic Overlap:** When an unseen category shares semantic features with known categories (e.g., household electronic appliances vs tech gadgets), centroid distances can dip below the threshold, lowering recall.
-2. **Buffer Scaling:** While a 200-sample buffer works well for 4 classes, scaling to hundreds of classes requires sub-linear exemplar selection or generative replay.
-3. **Linear Head Expansion:** Expanding the output head linearly scales parameter count slightly per class.
+## 20. Limitations
+1. **LwF in Strict CIL:** 
+   - *Error Propagation:* LwF depends entirely on the teacher's prediction quality.
+   - *Out-of-Distribution Distillation:* Evaluating the teacher on unseen new-category samples cannot reconstruct the separation between old classes.
+   - *Recency Bias:* Distillation alone fails to prevent the newest head from dominating during task-oracle-free inference.
+2. **Novelty Semantic Overlap:** When an unseen category shares semantic features with known categories (e.g., household electronic appliances vs tech gadgets), centroid distances can dip below the threshold, lowering recall.
+3. **Buffer Scaling:** While a 200-sample buffer works well for 4 classes, scaling to hundreds of classes requires sub-linear exemplar selection or generative replay.
+4. **Linear Head Expansion:** Expanding the output head linearly scales parameter count slightly per class.
 
 ---
 
-## 20. Future Work
+## 21. Future Work
 1. **Generative Feature Replay:** Generating synthetic embeddings using diffusion or VAEs to eliminate exemplar storage entirely.
 2. **Adaptive Thresholds:** Dynamic, class-specific novelty thresholds instead of a global percentile.
 3. **Contrastive Representation Learning:** Training an end-to-end projection head with contrastive loss to maximize margin between category centroids.
 
 ---
 
-## 21. Installation
+## 22. Installation
 
 ```bash
 # Clone the repository
@@ -243,7 +297,7 @@ pip install -r requirements.txt
 
 ---
 
-## 22. Run Commands
+## 23. Run Commands
 
 ```bash
 # Execute entire pipeline end-to-end (preprocess -> embeddings -> train -> evaluate -> visualize)
@@ -252,7 +306,7 @@ python main.py --stage all
 # Run individual stages modularly:
 python main.py --stage preprocess
 python main.py --stage embeddings
-python main.py --stage train --ewc-lambda 100.0
+python main.py --stage train --ewc-lambda 100.0 --lwf-lambda 1.0 --lwf-temperature 2.0
 python main.py --stage evaluate
 python main.py --stage visualize
 
@@ -262,7 +316,7 @@ python -m pytest
 
 ---
 
-## 23. Project Directory Structure
+## 24. Project Directory Structure
 
 ```
 EvoRoute/
@@ -277,11 +331,17 @@ EvoRoute/
 │       ├── val_embeddings.pt             # 384-D MiniLM validation embeddings
 │       └── test_embeddings.pt            # Strictly isolated test embeddings
 ├── models/                               # Checkpoints (.pt) for all trained methods
+│   ├── naive_final.pt
+│   ├── ewc_final.pt
+│   ├── replay_final.pt
+│   ├── lwf_final.pt                      # LwF final continual model checkpoint
+│   ├── replay_ewc_final.pt
+│   └── joint_final.pt
 ├── results/
 │   ├── metrics/                          # final_results.json, memory_sensitivity.json, novelty_metrics.json
-│   └── plots/                            # 7 publication-ready PNG figures
+│   └── plots/                            # 8 publication-ready PNG figures including lwf_retention_analysis.png
 ├── src/
-│   ├── config.py                         # Hyperparameters, directories, task definitions
+│   ├── config.py                         # Hyperparameters (LWF_TEMPERATURE, LWF_LAMBDA, EWC_LAMBDA)
 │   ├── data.py                           # Dataset loading, cleaning, stratified splitting
 │   ├── embeddings.py                     # Frozen sentence-transformers MiniLM encoder
 │   ├── tasks.py                          # Incremental task data slicing & DataLoader iterators
@@ -289,13 +349,15 @@ EvoRoute/
 │   ├── novelty.py                        # Hyperspherical centroid detector & threshold calibration
 │   ├── replay.py                         # ReplayBuffer (budget <= 200) with balanced sampling
 │   ├── ewc.py                            # Sample-wise Fisher Information & quadratic loss penalty
+│   ├── lwf.py                            # Learning without Forgetting teacher & temperature KD loss
 │   ├── train.py                          # Continual training loops & joint upper bound
 │   ├── evaluate.py                       # Accuracy, task accuracy, and forgetting metrics
-│   └── visualize.py                      # 7 publication matplotlib visualizations
+│   └── visualize.py                      # 8 publication matplotlib visualizations
 ├── tests/
 │   ├── test_model_expansion.py           # Unit tests for weight invariance during expansion
 │   ├── test_replay_buffer.py             # Unit tests for buffer capacity bounds & rebalancing
 │   ├── test_ewc.py                       # Unit tests for Fisher accumulation & loss integration
+│   ├── test_lwf.py                       # Comprehensive unit tests for LwF teacher, loss, and dynamic slicing
 │   ├── test_consistency_audit.py         # Cross-artifact metric consistency audit
 │   └── test_streamlit_runtime.py         # End-to-end dashboard & model runtime validation
 ├── main.py                               # CLI entrypoint supporting all stages
@@ -305,14 +367,14 @@ EvoRoute/
 
 ---
 
-## 24. Reproducibility
+## 25. Reproducibility
 - **Deterministic Seeding:** `set_seed(42)` sets seeds across PyTorch, NumPy, Python standard library, and sets `torch.backends.cudnn.deterministic = True`.
 - **Precomputed Embeddings:** Feature vectors are deterministically cached to ensure identical initial representations across runs.
 - **Zero Hardcoded Numbers:** All plots, tables, and dashboard elements load directly from generated metrics files.
 
 ---
 
-## 25. Hackathon Demo Instructions (2–4 Minute Pitch Sequence)
+## 26. Hackathon Demo Instructions (2–4 Minute Pitch Sequence)
 
 Launch the interactive dashboard:
 ```bash
@@ -329,7 +391,7 @@ streamlit run app/app.py
 - **Step 5: Demonstrate Forgetting (Page 4):** Switch to Live Forgetting Demonstration. Show Naive fine-tuning dropping Books to 9% and Clothing to 0%.
 - **Step 6: Show Replay + EWC Retention (Page 4):** Show Replay + EWC maintaining Books at 67.5% and Clothing at 90.0%.
 - **Step 7: Introduce Household (Page 2):** Head expands to 4 classes; Replay rebalances memory to 50/class.
-- **Step 8: Show Final Benchmark (Page 3):** Point to Official Benchmark Table: Replay + EWC achieves **65.62% overall accuracy** and **46.50% forgetting** vs Naive (25.00% / 99.50%). Clarify Joint (93.75%) is offline.
+- **Step 8: Show Final Benchmark (Page 3):** Point to Official Benchmark Table: Replay + EWC achieves **65.62% overall accuracy** and **46.50% forgetting** vs Naive (25.00% / 99.50%) and LwF (25.00% / 99.50%). Clarify Joint (93.75%) is offline.
 - **Step 9: Highlight Memory Efficiency (Page 4):** Show Memory Ablation Curve: a compact 200-sample buffer preserves knowledge across the entire catalog.
 
 ---

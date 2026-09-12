@@ -25,6 +25,7 @@ def test_consistency_audit():
         ("naive", "Naive Sequential", 0.25, 0.3333, 0.995),
         ("ewc", "EWC", 0.25, 0.3333, 0.995),
         ("replay", "Experience Replay", 0.64625, 0.6717, 0.4775),
+        ("lwf", "LwF", 0.25, 0.3333, 0.995),
         ("replay_ewc", "Replay + EWC", 0.65625, 0.6800, 0.465),
         ("joint", "Joint Upper Bound", 0.9375, 0.9250, 0.0)
     ]

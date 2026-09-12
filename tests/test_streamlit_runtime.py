@@ -30,7 +30,7 @@ def test_streamlit_runtime_verification():
     print("=================================================================")
     
     # Check 1: Required model files exist
-    required_models = ["naive_final.pt", "replay_final.pt", "replay_ewc_final.pt", "ewc_final.pt", "joint_final.pt"]
+    required_models = ["naive_final.pt", "replay_final.pt", "replay_ewc_final.pt", "lwf_final.pt", "ewc_final.pt", "joint_final.pt"]
     print("\n[CHECK 1] Verifying all required model files exist...")
     for m in required_models:
         model_path = MODELS_DIR / m
@@ -51,7 +51,7 @@ def test_streamlit_runtime_verification():
     assert FINAL_METRICS_PATH.exists(), f"Missing {FINAL_METRICS_PATH}"
     with open(FINAL_METRICS_PATH, "r") as f:
         final_metrics = json.load(f)
-    for method_key in ["naive", "replay", "replay_ewc", "ewc", "joint"]:
+    for method_key in ["naive", "replay", "replay_ewc", "lwf", "ewc", "joint"]:
         assert method_key in final_metrics, f"Missing method {method_key} in final_metrics.json"
         data = final_metrics[method_key]
         assert "overall_accuracy" in data, f"Missing overall_accuracy for {method_key}"
@@ -122,6 +122,7 @@ def test_streamlit_runtime_verification():
         ("naive", "Naive Sequential", "0"),
         ("ewc", "EWC", "0"),
         ("replay", "Experience Replay", "200"),
+        ("lwf", "LwF", "0"),
         ("replay_ewc", "Replay + EWC (Proposed)", "200"),
         ("joint", "Joint Upper Bound", "Full Dataset"),
     ]
@@ -148,7 +149,8 @@ def test_streamlit_runtime_verification():
         "memory_vs_accuracy.png",
         "memory_vs_forgetting.png",
         "knowledge_retention_heatmap.png",
-        "novelty_detection_distribution.png"
+        "novelty_detection_distribution.png",
+        "lwf_retention_analysis.png"
     ]
     for p in required_plots:
         plot_file = RESULTS_PLOTS_DIR / p
