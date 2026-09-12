@@ -1,0 +1,506 @@
+{
+  "naive": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.36333333333333334,
+      "balanced_accuracy": 0.36333333333333334,
+      "macro_f1": 0.22554885536184957,
+      "per_class_accuracy": {
+        "Books": 0.09,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 1.0
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.25,
+      "balanced_accuracy": 0.25,
+      "macro_f1": 0.1,
+      "per_class_accuracy": {
+        "Books": 0.0,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 0.0,
+        "Household": 1.0
+      },
+      "total_samples": 800
+    }
+  ],
+  "ewc": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.34833333333333333,
+      "balanced_accuracy": 0.34833333333333333,
+      "macro_f1": 0.19727113439269936,
+      "per_class_accuracy": {
+        "Books": 0.045,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 1.0
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.25,
+      "balanced_accuracy": 0.25,
+      "macro_f1": 0.1,
+      "per_class_accuracy": {
+        "Books": 0.0,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 0.0,
+        "Household": 1.0
+      },
+      "total_samples": 800
+    }
+  ],
+  "replay": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.8466666666666667,
+      "balanced_accuracy": 0.8466666666666667,
+      "macro_f1": 0.8468362787696928,
+      "per_class_accuracy": {
+        "Books": 0.645,
+        "Clothing & Accessories": 0.9,
+        "Electronics": 0.995
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.5825,
+      "balanced_accuracy": 0.5825,
+      "macro_f1": 0.5934714340033488,
+      "per_class_accuracy": {
+        "Books": 0.41,
+        "Clothing & Accessories": 0.565,
+        "Electronics": 0.365,
+        "Household": 0.99
+      },
+      "total_samples": 800
+    }
+  ],
+  "lwf": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.3333333333333333,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.16666666666666666,
+      "per_class_accuracy": {
+        "Books": 0.0,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 1.0
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.25,
+      "balanced_accuracy": 0.25,
+      "macro_f1": 0.1,
+      "per_class_accuracy": {
+        "Books": 0.0,
+        "Clothing & Accessories": 0.0,
+        "Electronics": 0.0,
+        "Household": 1.0
+      },
+      "total_samples": 800
+    }
+  ],
+  "replay_ewc": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.8566666666666667,
+      "balanced_accuracy": 0.8566666666666668,
+      "macro_f1": 0.8574650297880266,
+      "per_class_accuracy": {
+        "Books": 0.675,
+        "Clothing & Accessories": 0.9,
+        "Electronics": 0.995
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.65625,
+      "balanced_accuracy": 0.65625,
+      "macro_f1": 0.6709681489207049,
+      "per_class_accuracy": {
+        "Books": 0.48,
+        "Clothing & Accessories": 0.69,
+        "Electronics": 0.47,
+        "Household": 0.985
+      },
+      "total_samples": 800
+    }
+  ],
+  "evoroute_br_candidate": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.8816666666666667,
+      "balanced_accuracy": 0.8816666666666667,
+      "macro_f1": 0.8818953936996013,
+      "per_class_accuracy": {
+        "Books": 0.715,
+        "Clothing & Accessories": 0.935,
+        "Electronics": 0.995
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.72625,
+      "balanced_accuracy": 0.72625,
+      "macro_f1": 0.741845095535027,
+      "per_class_accuracy": {
+        "Books": 0.61,
+        "Clothing & Accessories": 0.735,
+        "Electronics": 0.58,
+        "Household": 0.98
+      },
+      "total_samples": 800
+    }
+  ],
+  "joint": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.975,
+      "balanced_accuracy": 0.975,
+      "macro_f1": 0.4918008803399232,
+      "per_class_accuracy": {
+        "Books": 0.97,
+        "Clothing & Accessories": 0.98
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.95,
+      "balanced_accuracy": 0.9500000000000001,
+      "macro_f1": 0.7218822070150994,
+      "per_class_accuracy": {
+        "Books": 0.97,
+        "Clothing & Accessories": 0.98,
+        "Electronics": 0.9
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.9375,
+      "balanced_accuracy": 0.9375,
+      "macro_f1": 0.9371896367951916,
+      "per_class_accuracy": {
+        "Books": 0.97,
+        "Clothing & Accessories": 0.98,
+        "Electronics": 0.9,
+        "Household": 0.9
+      },
+      "total_samples": 800
+    }
+  ],
+  "evoroute_br_calibrated": [
+    {
+      "task_id": 1,
+      "classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "new_classes": [
+        "Books",
+        "Clothing & Accessories"
+      ],
+      "overall_accuracy": 0.99,
+      "balanced_accuracy": 0.99,
+      "macro_f1": 0.99,
+      "per_class_accuracy": {
+        "Books": 0.99,
+        "Clothing & Accessories": 0.99
+      },
+      "total_samples": 400
+    },
+    {
+      "task_id": 2,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics"
+      ],
+      "new_classes": [
+        "Electronics"
+      ],
+      "overall_accuracy": 0.8816666666666667,
+      "balanced_accuracy": 0.8816666666666667,
+      "macro_f1": 0.8818953936996013,
+      "per_class_accuracy": {
+        "Books": 0.715,
+        "Clothing & Accessories": 0.935,
+        "Electronics": 0.995
+      },
+      "total_samples": 600
+    },
+    {
+      "task_id": 3,
+      "classes": [
+        "Books",
+        "Clothing & Accessories",
+        "Electronics",
+        "Household"
+      ],
+      "new_classes": [
+        "Household"
+      ],
+      "overall_accuracy": 0.905,
+      "balanced_accuracy": 0.9049999999999999,
+      "macro_f1": 0.906186442231649,
+      "per_class_accuracy": {
+        "Books": 0.865,
+        "Clothing & Accessories": 0.955,
+        "Electronics": 0.88,
+        "Household": 0.92
+      },
+      "total_samples": 800
+    }
+  ]
+}

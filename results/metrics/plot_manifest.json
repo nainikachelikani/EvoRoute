@@ -6,7 +6,7 @@
       "title": "Overall Accuracy Across Continual Tasks",
       "caption": "Trajectory of multi-class seen accuracy across Task 1 (Books/Clothing), Task 2 (Electronics), and Task 3 (Household). Demonstrates naive sequential collapse versus robust continual retention.",
       "exists": true,
-      "size_bytes": 95530
+      "size_bytes": 301681
     },
     {
       "filename": "catastrophic_forgetting.png",
@@ -14,7 +14,7 @@
       "title": "Catastrophic Forgetting Comparison",
       "caption": "Average catastrophic forgetting across continual learning methods. Exemplar-free methods suffer 99.5% forgetting, while replay mitigates parameter drift.",
       "exists": true,
-      "size_bytes": 147650
+      "size_bytes": 58871
     },
     {
       "filename": "per_class_accuracy.png",
@@ -46,7 +46,7 @@
       "title": "Knowledge Retention Matrix Heatmap",
       "caption": "Dual retention matrix heatmaps comparing Naive Sequential learning (left) and Replay + EWC retention (right) across incremental training stages.",
       "exists": true,
-      "size_bytes": 165900
+      "size_bytes": 195761
     },
     {
       "filename": "lwf_retention_analysis.png",
@@ -54,7 +54,7 @@
       "title": "Learning without Forgetting (LwF) Diagnostic",
       "caption": "Examines why standalone knowledge distillation collapses under strict Class-Incremental Learning without exemplars.",
       "exists": true,
-      "size_bytes": 103416
+      "size_bytes": 223713
     },
     {
       "filename": "recency_bias_collapse.png",

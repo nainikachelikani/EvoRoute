@@ -225,16 +225,16 @@ When a novel category is detected, the classification head dynamically expands f
 
 All metrics below are generated directly from actual execution (`results/metrics/scientific_summary.json` & `results/metrics/official_benchmark_manifest.json`):
 
-| Method | Overall Accuracy | Balanced Accuracy | Macro F1 | Recency Bias | Household Share | Memory | Status |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Naive Sequential** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
-| **EWC** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
-| **Experience Replay** | 58.25% | 58.25% | 59.35% | +41.00% | 66.0% | 200 | Baseline |
-| **LwF** | 25.00% | 25.00% | 10.00% | +75.00% | 100.0% | 0 | Baseline |
-| **Replay + EWC (Baseline)** | 65.62% | 65.62% | 67.10% | +33.38% | 58.4% | 200 | Official Baseline |
-| **EvoRoute-BR Candidate** | 81.00% | 81.00% | 81.96% | +16.75% | 41.8% | 200 | Candidate (Uncalibrated) |
-| **EvoRoute-BR Calibrated ⭐** | **90.50%** | **90.50%** | **90.62%** | **+3.50%** | **28.5%** | **200** | **Recommended Method** |
-| **Joint Upper Bound** | 93.75% | 93.75% | 93.72% | -0.50% | 24.5% | Full Dataset | Offline Upper Bound |
+| Method | Overall Accuracy | Final Avg Task Acc | Avg Forgetting | Balanced Accuracy | Macro F1 | Recency Bias | Memory | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Naive Sequential** | 25.00% | 33.33% | 99.50% | 25.00% | 10.00% | +75.00% | 0 | Baseline |
+| **EWC** | 25.00% | 33.33% | 99.50% | 25.00% | 10.00% | +75.00% | 0 | Baseline |
+| **Experience Replay** | 64.62% | 67.17% | 47.75% | 58.25% | 59.35% | +41.00% | 200 | Baseline |
+| **LwF** | 25.00% | 33.33% | 99.50% | 25.00% | 10.00% | +75.00% | 0 | Baseline |
+| **Replay + EWC (Baseline)** | 65.62% | 68.00% | 46.50% | 65.62% | 67.10% | +33.38% | 200 | Official Baseline |
+| **EvoRoute-BR Candidate** | 81.00% | 81.00% | 46.50% | 81.00% | 81.96% | +16.75% | 200 | Candidate (Uncalibrated) |
+| **EvoRoute-BR Calibrated ⭐** | **90.50%** | **90.50%** | **46.50%** | **90.50%** | **90.62%** | **+3.50%** | **200** | **Recommended Method** |
+| **Joint Upper Bound** | 93.75% | 92.50% | 0.00% | 93.75% | 93.72% | -0.50% | Full Dataset | Offline Upper Bound |
 
 *Clarification on Joint Upper Bound:* Joint Training achieves 93.75% because it is trained offline with all data available simultaneously. **Joint Training is NOT a continual learning method** and is included strictly as an empirical upper bound.
 

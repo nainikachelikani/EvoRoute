@@ -104,6 +104,170 @@ st.markdown("""
         margin-left: 8px;
         margin-bottom: 20px;
     }
+
+    /* ========================================================================= */
+    /* RESPONSIVE METRICS & PREDICTION CARDS (NO TEXT CUTOFF / TRUNCATION)      */
+    /* ========================================================================= */
+    
+    /* Streamlit native metric overrides to prevent ellipsis and allow full wrapping */
+    [data-testid="stMetric"] {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+    [data-testid="stMetricValue"] {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        font-size: 1.28rem !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
+        line-height: 1.35 !important;
+    }
+    [data-testid="stMetricLabel"] {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+        margin-bottom: 4px !important;
+        line-height: 1.3 !important;
+    }
+    [data-testid="stMetricDelta"] {
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow: visible !important;
+        font-size: 0.78rem !important;
+    }
+
+    /* Dedicated Hero Prediction Card (Full width, responsive, no clipping) */
+    .prediction-hero-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        border: 1.5px solid #CBD5E1;
+        border-left: 6px solid #2563EB;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    .prediction-hero-header {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #2563EB;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .prediction-hero-value {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #0F172A;
+        line-height: 1.25;
+        white-space: normal;
+        word-break: break-word;
+        overflow: visible;
+        margin: 2px 0 4px 0;
+    }
+    .prediction-hero-subtext {
+        font-size: 0.84rem;
+        color: #64748B;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    /* Research mode specific hero cards */
+    .prediction-hero-baseline {
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%);
+        border: 1.5px solid #FDE68A;
+        border-left: 6px solid #D97706;
+    }
+    .prediction-hero-baseline .prediction-hero-header {
+        color: #B45309;
+    }
+
+    .prediction-hero-evoroute {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);
+        border: 1.5px solid #BBF7D0;
+        border-left: 6px solid #16A34A;
+    }
+    .prediction-hero-evoroute .prediction-hero-header {
+        color: #15803D;
+    }
+
+    /* Responsive 3-subcard row */
+    .metric-subcard {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 84px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-subcard:hover {
+        border-color: #CBD5E1;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .metric-subcard-label {
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #64748B;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+    .metric-subcard-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0F172A;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.25;
+        overflow: visible;
+    }
+    .metric-subcard-caption {
+        font-size: 0.74rem;
+        color: #94A3B8;
+        margin-top: 3px;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* Mobile and small viewport adaptation */
+    @media (max-width: 900px) {
+        .prediction-hero-value {
+            font-size: 1.35rem;
+        }
+        .metric-subcard-value {
+            font-size: 1.05rem;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -164,41 +328,23 @@ def load_all_models_and_detector():
     return models, detector
 
 
+from src.data_loader import load_experiment_results, get_task_state
+
 @st.cache_data
 def load_all_metrics():
-    """Loads all experimental metrics JSON files dynamically."""
-    final_metrics = {}
-    memory_study = {}
-    novelty_metrics = {}
-    transition_matrices = {}
-    official_manifest = {}
-
-    if FINAL_METRICS_PATH.exists():
-        with open(FINAL_METRICS_PATH, "r") as f:
-            final_metrics = json.load(f)
-
-    if MEMORY_STUDY_PATH.exists():
-        with open(MEMORY_STUDY_PATH, "r") as f:
-            memory_study = json.load(f)
-
-    if NOVELTY_METRICS_PATH.exists():
-        with open(NOVELTY_METRICS_PATH, "r") as f:
-            novelty_metrics = json.load(f)
-
-    from src.config import PREDICTION_TRANSITION_MATRIX_PATH, OFFICIAL_BENCHMARK_MANIFEST_PATH
-    if PREDICTION_TRANSITION_MATRIX_PATH.exists():
-        with open(PREDICTION_TRANSITION_MATRIX_PATH, "r") as f:
-            transition_matrices = json.load(f)
-
-    if OFFICIAL_BENCHMARK_MANIFEST_PATH.exists():
-        with open(OFFICIAL_BENCHMARK_MANIFEST_PATH, "r") as f:
-            official_manifest = json.load(f)
-
-    return final_metrics, memory_study, novelty_metrics, transition_matrices, official_manifest
+    """Loads all experimental metrics dynamically using the centralized data loader."""
+    exp_results = load_experiment_results()
+    final_metrics = exp_results.get("final_results", {})
+    memory_study = exp_results.get("memory_study", {})
+    novelty_metrics = exp_results.get("novelty_metrics", {})
+    transition_matrices = exp_results.get("transition_matrices", {})
+    official_manifest = exp_results.get("official_manifest", {})
+    debug_info = exp_results.get("debug_info", {})
+    return exp_results, final_metrics, memory_study, novelty_metrics, transition_matrices, official_manifest, debug_info
 
 
 models, detector = load_all_models_and_detector()
-final_metrics, memory_study, novelty_metrics, transition_matrices, official_manifest = load_all_metrics()
+exp_results, final_metrics, memory_study, novelty_metrics, transition_matrices, official_manifest, debug_info = load_all_metrics()
 
 # Sidebar Navigation
 st.sidebar.title("⚡ EvoRoute")
@@ -218,6 +364,24 @@ page = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
+
+# STEP 7: Collapsible Pipeline Debug Mode
+with st.sidebar.expander("🛠️ Pipeline Debug Mode (Data Inspection)", expanded=False):
+    st.caption("Centralized results loader diagnostics:")
+    st.markdown("**Loaded files:**")
+    for f in debug_info.get("loaded_files", []):
+        st.write(f"{f['status']} `{f['name']}`")
+    st.markdown("**Available keys in final_results:**")
+    st.write(debug_info.get("available_keys", []))
+    st.markdown(f"**Tasks loaded:** {debug_info.get('tasks_loaded', 0)}")
+    st.markdown("**Task 1 metrics:**")
+    st.json(debug_info.get("task_1_metrics"))
+    st.markdown("**Task 2 metrics:**")
+    st.json(debug_info.get("task_2_metrics"))
+    st.markdown("**Task 3 metrics:**")
+    st.json(debug_info.get("task_3_metrics"))
+
+st.sidebar.markdown("---")
 st.sidebar.markdown("""
 **Hackathon Track 5: Continual Learning**
 - **Inference Mode:** Strict CIL (Zero task oracle)
@@ -225,6 +389,76 @@ st.sidebar.markdown("""
 - **Dataset:** E-Commerce Catalog (4 Classes)
 - **Memory Budget:** ≤ 200 Exemplars
 """)
+
+
+def render_task_continual_metrics(task_id: int, exp_data: dict):
+    """
+    Renders task-wise continual learning metrics defensively.
+    Shows introduced classes, not-yet-introduced classes, per-class accuracy,
+    overall accuracy, and forgetting.
+    Never displays 'Not yet introduced' for already-introduced classes.
+    Never displays 0.00% if metric is genuinely missing ('Metric unavailable').
+    """
+    from src.config import TASK_CUMULATIVE_CLASSES, ID2CATEGORY, CATEGORIES
+    from src.data_loader import get_task_state
+
+    cumulative_ids = TASK_CUMULATIVE_CLASSES.get(task_id, [0, 1, 2, 3][:task_id + 1])
+    introduced_classes = [ID2CATEGORY[c] for c in cumulative_ids]
+
+    naive_state = get_task_state(exp_data, "naive", task_id) or {}
+    base_state = get_task_state(exp_data, "replay_ewc", task_id) or {}
+    cand_state = get_task_state(exp_data, "evoroute_br_calibrated", task_id) or get_task_state(exp_data, "evoroute_br_candidate", task_id) or {}
+
+    c1, c2, c3 = st.columns(3)
+
+    def _render_class_list(state: dict, title: str, subtitle: str, badge_type: str):
+        st.markdown(f"#### {title}")
+        st.caption(subtitle)
+        per_class = state.get("per_class_accuracy", {}) if isinstance(state, dict) else {}
+        for cat in CATEGORIES:
+            if cat in introduced_classes:
+                val = per_class.get(cat)
+                if val is not None and isinstance(val, (int, float)):
+                    pct = val * 100.0
+                    st.write(f"**{cat}**: {pct:.1f}%")
+                    st.progress(int(min(100, max(0, pct))))
+                else:
+                    st.write(f"**{cat}**: *Metric unavailable*")
+            else:
+                st.write(f"*{cat}*: Not yet introduced")
+
+        overall = state.get("overall_accuracy") if isinstance(state, dict) else None
+        if overall is not None and isinstance(overall, (int, float)):
+            acc_str = f"Overall Accuracy: **{overall * 100:.2f}%**"
+            if badge_type == "error":
+                st.error(acc_str)
+            elif badge_type == "info":
+                st.info(acc_str)
+            else:
+                st.success(acc_str)
+        else:
+            msg = "Overall Accuracy: **Metric unavailable**"
+            if badge_type == "error":
+                st.error(msg)
+            elif badge_type == "info":
+                st.info(msg)
+            else:
+                st.success(msg)
+
+        f_val = state.get("forgetting") if isinstance(state, dict) else None
+        if f_val is not None and isinstance(f_val, (int, float)):
+            st.caption(f"Historical Forgetting: **{f_val * 100:.1f}%**")
+        elif task_id == 1:
+            st.caption("Historical Forgetting: *N/A (Initial Base Platform)*")
+        else:
+            st.caption("Historical Forgetting: *Metric unavailable*")
+
+    with c1:
+        _render_class_list(naive_state, "❌ Naive Sequential", "Standard fine-tuning (parameter overwrite)", "error")
+    with c2:
+        _render_class_list(base_state, "🛡️ Replay + EWC (Baseline)", "Balanced 200 buffer + Fisher regularization", "info")
+    with c3:
+        _render_class_list(cand_state, "⭐ EvoRoute-BR", "Class-balanced replay + output head calibration", "success")
 
 
 # =============================================================================
@@ -372,17 +606,51 @@ if page == "🚀 EvoRoute Overview":
 
         if app_mode.startswith("✨ Demo Mode"):
             st.markdown("### Inference & Routing Decision (EvoRoute-BR)")
-            m1, m2, m3, m4 = st.columns(4)
-            with m1:
-                st.metric("Predicted Category", cal_pred_cat)
-            with m2:
-                st.metric("Classifier Confidence", f"{cal_conf * 100:.1f}%")
-            with m3:
-                status = "🚨 HIGH NOVELTY / UNKNOWN" if nov_res["is_novel"] else "🟢 FAMILIAR / KNOWN"
-                st.metric("Novelty Status", status)
-            with m4:
-                st.metric("Distance to Centroid", f"{nov_res['distance']:.3f}", f"Threshold: {nov_res['threshold']:.3f}")
 
+            # 1. Preferred Final Layout: Full-Width Predicted Category Hero Card
+            st.markdown(f"""
+            <div class="prediction-hero-card">
+                <div class="prediction-hero-header">🎯 Predicted Category</div>
+                <div class="prediction-hero-value">{cal_pred_cat}</div>
+                <div class="prediction-hero-subtext">
+                    <span>Target Head: <b>Class {cal_pred_id}</b></span>
+                    <span>•</span>
+                    <span>Routing: <b>Active Catalog Stream</b></span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # 2. Three Supporting Metric Subcards in Responsive Columns
+            m1, m2, m3 = st.columns(3)
+            with m1:
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Classifier Confidence</div>
+                    <div class="metric-subcard-value">{cal_conf * 100:.1f}%</div>
+                    <div class="metric-subcard-caption">Calibrated Softmax Probability</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with m2:
+                novelty_text = "🚨 High Novelty" if nov_res["is_novel"] else "🟢 Familiar"
+                badge_cls = "badge-danger" if nov_res["is_novel"] else "badge-success"
+                desc_text = "Exceeds threshold τ" if nov_res["is_novel"] else "Within known cluster τ"
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Novelty Status</div>
+                    <div class="metric-subcard-value"><span class="badge-pill {badge_cls}">{novelty_text}</span></div>
+                    <div class="metric-subcard-caption">{desc_text}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with m3:
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Distance to Centroid</div>
+                    <div class="metric-subcard-value">{nov_res['distance']:.3f}</div>
+                    <div class="metric-subcard-caption">Threshold: τ = {nov_res['threshold']:.3f}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
             st.caption("ℹ️ **Strict Architectural Separation:** The classifier predicts the retail category based on learned discriminative boundaries. The novelty assessment evaluates distribution familiarity independently on the unit hypersphere and never alters or overrides the classifier's prediction.")
 
             prob_df = pd.DataFrame({
@@ -398,11 +666,17 @@ if page == "🚀 EvoRoute Overview":
             with c_base_col:
                 st.markdown("#### 1. Baseline: Replay + EWC")
                 st.caption("Standard 80/20 replay mixing with uncalibrated newest class head.")
-                b_m1, b_m2 = st.columns(2)
-                with b_m1:
-                    st.metric("Baseline Prediction", base_pred_cat)
-                with b_m2:
-                    st.metric("Confidence", f"{base_conf * 100:.1f}%")
+
+                # Full-width Prediction Card for Baseline
+                st.markdown(f"""
+                <div class="prediction-hero-card prediction-hero-baseline">
+                    <div class="prediction-hero-header">🎯 Baseline Prediction</div>
+                    <div class="prediction-hero-value">{base_pred_cat}</div>
+                    <div class="prediction-hero-subtext">
+                        <span>Confidence: <b>{base_conf * 100:.1f}%</b></span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
                 b_prob_df = pd.DataFrame({
                     "Category": CATEGORIES[:len(base_probs)],
@@ -416,11 +690,17 @@ if page == "🚀 EvoRoute Overview":
             with c_evo_col:
                 st.markdown("#### 2. EvoRoute-BR (Calibrated Winner)")
                 st.caption("Class-balanced replay + post-task fine-tuning + logit rebalancing.")
-                e_m1, e_m2 = st.columns(2)
-                with e_m1:
-                    st.metric("EvoRoute-BR Prediction", cal_pred_cat)
-                with e_m2:
-                    st.metric("Confidence", f"{cal_conf * 100:.1f}%")
+
+                # Full-width Prediction Card for EvoRoute-BR
+                st.markdown(f"""
+                <div class="prediction-hero-card prediction-hero-evoroute">
+                    <div class="prediction-hero-header">🎯 EvoRoute-BR Prediction</div>
+                    <div class="prediction-hero-value">{cal_pred_cat}</div>
+                    <div class="prediction-hero-subtext">
+                        <span>Confidence: <b>{cal_conf * 100:.1f}%</b></span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
 
                 e_prob_df = pd.DataFrame({
                     "Category": CATEGORIES[:len(cal_probs)],
@@ -435,12 +715,31 @@ if page == "🚀 EvoRoute Overview":
             st.markdown("#### Independent Hypersphere Novelty Gate")
             n_c1, n_c2, n_c3 = st.columns(3)
             with n_c1:
-                status = "🚨 HIGH NOVELTY / UNKNOWN" if nov_res["is_novel"] else "🟢 FAMILIAR / KNOWN"
-                st.metric("Novelty Verdict", status)
+                novelty_text = "🚨 High Novelty" if nov_res["is_novel"] else "🟢 Familiar"
+                badge_cls = "badge-danger" if nov_res["is_novel"] else "badge-success"
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Novelty Verdict</div>
+                    <div class="metric-subcard-value"><span class="badge-pill {badge_cls}">{novelty_text}</span></div>
+                    <div class="metric-subcard-caption">Independent Gatekeeper</div>
+                </div>
+                """, unsafe_allow_html=True)
             with n_c2:
-                st.metric("Cosine Distance to Known Centroids", f"{nov_res['distance']:.4f}")
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Cosine Distance</div>
+                    <div class="metric-subcard-value">{nov_res['distance']:.4f}</div>
+                    <div class="metric-subcard-caption">To Nearest Known Centroid</div>
+                </div>
+                """, unsafe_allow_html=True)
             with n_c3:
-                st.metric("Calibrated Threshold (tau)", f"{nov_res['threshold']:.4f}")
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Calibrated Threshold</div>
+                    <div class="metric-subcard-value">{nov_res['threshold']:.4f}</div>
+                    <div class="metric-subcard-caption">Validation Percentile τ</div>
+                </div>
+                """, unsafe_allow_html=True)
             st.caption("Note: Novelty detection assesses semantic familiarity independently and never mutates classifier predictions.")
 
 
@@ -620,6 +919,26 @@ elif page == "🔄 Evolution Simulation ⭐":
 
             st.markdown("#### Final Retained Accuracy Across All 4 Categories:")
             st.json(rep_ewc.get("final_per_class", {}))
+
+    st.markdown("---")
+    st.subheader("🔬 Task-Wise Continual Learning Metrics Adapter")
+    st.markdown("""
+    Explore empirical platform metrics across tasks.
+    Correctly represents introduced classes, not yet introduced classes, per-class accuracy, overall accuracy, and forgetting:
+    """)
+
+    task_sim_choice = st.radio(
+        "Select Platform Evolution Task State:",
+        [
+            "Task 1: Base Platform (Books & Clothing introduced)",
+            "Task 2: Expansion (+ Electronics introduced)",
+            "Task 3: Mature Catalog (+ Household introduced - Full Catalog)"
+        ],
+        horizontal=True,
+        key="page2_task_radio"
+    )
+    selected_t = 1 if task_sim_choice.startswith("Task 1") else (2 if task_sim_choice.startswith("Task 2") else 3)
+    render_task_continual_metrics(selected_t, exp_results)
 
 
 # =============================================================================
@@ -801,42 +1120,9 @@ elif page == "📈 Experimental Analysis":
     )
 
     t_idx = 0 if stage_choice.startswith("After Task 1") else (1 if stage_choice.startswith("After Task 2") else 2)
+    selected_t = t_idx + 1
 
-    naive_hist = final_metrics.get("naive", {}).get("task_history", [{}, {}, {}])
-    prop_hist = final_metrics.get("replay_ewc", {}).get("task_history", [{}, {}, {}])
-
-    n_data = naive_hist[t_idx].get("per_class_accuracy", {}) if t_idx < len(naive_hist) else {}
-    p_data = prop_hist[t_idx].get("per_class_accuracy", {}) if t_idx < len(prop_hist) else {}
-
-    col_l, col_r = st.columns(2)
-
-    with col_l:
-        st.markdown("#### ❌ Naive Sequential Learning")
-        st.caption("Standard fine-tuning with no replay or weight regularization.")
-        for cat in CATEGORIES:
-            if cat in n_data:
-                val = n_data[cat] * 100
-                st.write(f"**{cat}**: {val:.1f}%")
-                st.progress(int(val))
-            else:
-                st.write(f"*{cat}*: Not yet introduced")
-
-        n_overall = naive_hist[t_idx].get("overall_accuracy", 0.0) * 100
-        st.error(f"Overall Accuracy: **{n_overall:.2f}%**")
-
-    with col_r:
-        st.markdown("#### ⭐ Replay + EWC (Baseline)")
-        st.caption("Balanced 200 exemplar buffer + Fisher Information quadratic penalty.")
-        for cat in CATEGORIES:
-            if cat in p_data:
-                val = p_data[cat] * 100
-                st.write(f"**{cat}**: {val:.1f}%")
-                st.progress(int(val))
-            else:
-                st.write(f"*{cat}*: Not yet introduced")
-
-        p_overall = prop_hist[t_idx].get("overall_accuracy", 0.0) * 100
-        st.success(f"Overall Accuracy: **{p_overall:.2f}%**")
+    render_task_continual_metrics(selected_t, exp_results)
 
     st.markdown("---")
 
@@ -861,60 +1147,80 @@ elif page == "📈 Experimental Analysis":
         if p1.exists():
             st.image(str(p1), use_container_width=True)
             st.info("**Interpretation:** Naive sequential learning accuracy plummets from 99% to 25% as new tasks overwrite old parameters. Replay + EWC and EvoRoute-BR maintain steady, high multi-task performance across all tasks.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab2:
         p2 = RESULTS_PLOTS_DIR / "catastrophic_forgetting.png"
         if p2.exists():
             st.image(str(p2), use_container_width=True)
             st.info("**Interpretation:** Naive and standalone EWC suffer near-total forgetting (99.50%). Adding 200 replay exemplars reduces catastrophic forgetting by more than half (down to 46.50%).")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab3:
         p3 = RESULTS_PLOTS_DIR / "per_class_accuracy.png"
         if p3.exists():
             st.image(str(p3), use_container_width=True)
             st.info("**Interpretation:** In Naive learning, Task 1 and Task 2 classes collapse to 0% accuracy once Household is learned. EvoRoute-BR retains balanced classification power across all 4 categories simultaneously (Books: 86.5%, Clothing: 95.5%, Electronics: 88.0%, Household: 92.0%).")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab4:
         p4a = RESULTS_PLOTS_DIR / "memory_vs_accuracy.png"
         if p4a.exists():
             st.image(str(p4a), use_container_width=True)
             st.info("**Interpretation:** Even a tiny 50-sample replay buffer dramatically improves accuracy from 25.00% to 51.00%. Diminishing marginal returns appear beyond 100–200 exemplars.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab5:
         p4b = RESULTS_PLOTS_DIR / "memory_vs_forgetting.png"
         if p4b.exists():
             st.image(str(p4b), use_container_width=True)
             st.info("**Interpretation:** Catastrophic forgetting drops sharply from 99.50% (0 memory) to 65.75% (50 memory) and down to 47.75% (200 memory), demonstrating high memory efficiency.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab6:
         p6 = RESULTS_PLOTS_DIR / "knowledge_retention_heatmap.png"
         if p6.exists():
             st.image(str(p6), use_container_width=True)
             st.info("**Interpretation:** The dual heatmap starkly illustrates weight overwrite in Naive sequential learning (left) versus stable knowledge retention in Replay + EWC (right) after Tasks 1, 2, and 3.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab7:
         p7 = RESULTS_PLOTS_DIR / "lwf_retention_analysis.png"
         if p7.exists():
             st.image(str(p7), use_container_width=True)
             st.info("**Interpretation:** LwF vs Naive vs Replay + EWC across continual learning stages. While LwF regularizes historical class outputs via distillation on new samples, without exemplar replay it still collapses under strict CIL recency bias (25.00% accuracy, 99.50% forgetting), proving why physical replay exemplars are vital for multi-class decision boundary stability.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab8:
         p8 = RESULTS_PLOTS_DIR / "recency_bias_collapse.png"
         if p8.exists():
             st.image(str(p8), use_container_width=True)
             st.info("**Interpretation:** Empirical prediction distribution across all 4 classes on the held-out test set. Exemplar-free methods (Naive, EWC, LwF) suffer 100% collapse into Household (+75.0% recency bias). Experience Replay and Replay + EWC preserve multi-class predictions, and EvoRoute-BR eliminates recency bias down to +3.5%.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab9:
         p9 = RESULTS_PLOTS_DIR / "prediction_transition_matrix.png"
         if p9.exists():
             st.image(str(p9), use_container_width=True)
             st.info("**Interpretation:** Sample-level tracking of all 800 test samples. Documents how 212 historical product samples wrongly classified as Household by Baseline Replay + EWC were recovered by EvoRoute-BR (77 Books, 53 Clothing, 82 Electronics). Net sample improvement is +199 (+24.88%).")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
     with tab10:
         p10 = RESULTS_PLOTS_DIR / "confusion_matrix_comparison.png"
         if p10.exists():
             st.image(str(p10), use_container_width=True)
             st.info("**Interpretation:** Normalized test confusion matrices comparing Baseline Replay + EWC (left) with EvoRoute-BR Calibrated (right). Baseline exhibits severe column 4 concentration (Household false positives), whereas EvoRoute-BR establishes a high-confidence diagonal with balanced multi-class recognition.")
+        else:
+            st.warning("Experiment data unavailable for this visualization.")
 
 
 # =============================================================================
@@ -961,10 +1267,24 @@ elif page == "🚨 Novelty Detection Lab":
 
             m1, m2 = st.columns(2)
             with m1:
-                st.metric("Minimum Cosine Distance", f"{det_res['distance']:.4f}")
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Minimum Cosine Distance</div>
+                    <div class="metric-subcard-value">{det_res['distance']:.4f}</div>
+                    <div class="metric-subcard-caption">Threshold: τ = {detector.threshold:.4f}</div>
+                </div>
+                """, unsafe_allow_html=True)
             with m2:
-                verdict = "🚨 UNKNOWN / NOVEL" if det_res["is_novel"] else "🟢 KNOWN"
-                st.metric("Verdict", verdict)
+                v_text = "🚨 High Novelty" if det_res["is_novel"] else "🟢 Familiar"
+                v_badge = "badge-danger" if det_res["is_novel"] else "badge-success"
+                v_desc = "Exceeds threshold τ (Unfamiliar)" if det_res["is_novel"] else "Within known clusters τ"
+                st.markdown(f"""
+                <div class="metric-subcard">
+                    <div class="metric-subcard-label">Novelty Assessment</div>
+                    <div class="metric-subcard-value"><span class="badge-pill {v_badge}">{v_text}</span></div>
+                    <div class="metric-subcard-caption">{v_desc}</div>
+                </div>
+                """, unsafe_allow_html=True)
 
     st.markdown("---")
     st.subheader("Calibrated Empirical Performance & Limitations")

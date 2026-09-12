@@ -60,23 +60,71 @@ METHOD_LABELS = {
 }
 
 
+def _render_unavailable(ax, fig, title: str, save_path: Path):
+    """Renders a clean explicit message when experimental data is unavailable, avoiding misleading empty axes."""
+    ax.clear()
+    ax.text(
+        0.5, 0.5,
+        "Experiment data unavailable for this visualization.",
+        ha="center", va="center", transform=ax.transAxes,
+        fontsize=13, fontweight="bold", color="#64748B"
+    )
+    ax.set_title(title, fontweight="bold", pad=12)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for spine in ax.spines.values():
+        spine.set_color("#CBD5E1")
+    fig.tight_layout()
+    fig.savefig(save_path, bbox_inches="tight")
+    plt.close(fig)
+
+
 def plot_accuracy_across_tasks(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 1: Accuracy Across Tasks comparing all methods."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "accuracy_across_tasks.png"
+
     fig, ax = plt.subplots(figsize=(8, 5.5), dpi=300)
+    title = "EvoRoute: Overall Accuracy Across Continual Learning Tasks"
     tasks = [1, 2, 3]
+    plotted_methods = 0
+
+    # Defensive check: if task_history is missing from results_data, try loading task_history.json
+    if not any("task_history" in results_data.get(m, {}) for m in METHOD_COLORS):
+        task_hist_file = RESULTS_METRICS_DIR / "task_history.json"
+        if task_hist_file.exists():
+            try:
+                with open(task_hist_file, "r") as f:
+                    th_data = json.load(f)
+                for m_k, hist in th_data.items():
+                    if m_k in results_data and isinstance(results_data[m_k], dict):
+                        results_data[m_k]["task_history"] = hist
+            except Exception as e:
+                logger.warning(f"Could not load task_history.json: {e}")
 
     for method_key, color in METHOD_COLORS.items():
-        if method_key not in results_data:
+        if method_key not in results_data or not isinstance(results_data[method_key], dict):
             continue
         history = results_data[method_key].get("task_history", [])
-        if not history:
+        if not history or not isinstance(history, list):
             continue
-        accs = [h["overall_accuracy"] * 100 for h in history]
-        label = METHOD_LABELS.get(method_key, method_key)
-        linestyle = "--" if method_key == "joint" else "-"
-        ax.plot(tasks[:len(accs)], accs, marker="o", color=color, label=label, linestyle=linestyle)
+        accs = []
+        for h in history:
+            val = h.get("overall_accuracy")
+            if val is not None and isinstance(val, (int, float)):
+                accs.append(val * 100)
+        if len(accs) > 0:
+            label = METHOD_LABELS.get(method_key, method_key)
+            linestyle = "--" if method_key == "joint" else "-"
+            ax.plot(tasks[:len(accs)], accs, marker="o", color=color, label=label, linestyle=linestyle)
+            plotted_methods += 1
 
-    ax.set_title("EvoRoute: Overall Accuracy Across Continual Learning Tasks", fontweight="bold", pad=12)
+    if plotted_methods == 0:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"No task-wise accuracy data found. Rendered unavailable for Plot 1: {save_path}")
+        return
+
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_xlabel("Task Sequence")
     ax.set_ylabel("Overall Accuracy (%)")
     ax.set_xticks(tasks)
@@ -85,8 +133,6 @@ def plot_accuracy_across_tasks(results_data: Dict[str, Any], save_path: Path = N
     ax.legend(frameon=True, loc="lower left")
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "accuracy_across_tasks.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 1: {save_path}")
@@ -94,17 +140,30 @@ def plot_accuracy_across_tasks(results_data: Dict[str, Any], save_path: Path = N
 
 def plot_catastrophic_forgetting(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 2: Catastrophic Forgetting Comparison across methods."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "catastrophic_forgetting.png"
+
     fig, ax = plt.subplots(figsize=(8.5, 5), dpi=300)
+    title = "Catastrophic Forgetting Comparison (Lower is Better)"
     methods = [m for m in ["naive", "ewc", "lwf", "replay", "replay_ewc"] if m in results_data]
     forgetting_vals = []
     labels = []
     colors = []
 
     for m in methods:
-        f_val = results_data[m].get("forgetting", {}).get("average_forgetting", 0.0) * 100
-        forgetting_vals.append(f_val)
-        labels.append(METHOD_LABELS.get(m, m))
-        colors.append(METHOD_COLORS.get(m, "#333333"))
+        f_val = results_data[m].get("average_forgetting")
+        if f_val is None and isinstance(results_data[m].get("forgetting"), dict):
+            f_val = results_data[m]["forgetting"].get("average_forgetting")
+
+        if f_val is not None and isinstance(f_val, (int, float)):
+            forgetting_vals.append(f_val * 100)
+            labels.append(METHOD_LABELS.get(m, m))
+            colors.append(METHOD_COLORS.get(m, "#333333"))
+
+    if not forgetting_vals:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"No forgetting metrics available. Rendered unavailable for Plot 2: {save_path}")
+        return
 
     bars = ax.bar(labels, forgetting_vals, color=colors, width=0.55, edgecolor="black", linewidth=0.8)
     for bar in bars:
@@ -114,14 +173,12 @@ def plot_catastrophic_forgetting(results_data: Dict[str, Any], save_path: Path =
                     xytext=(0, 4), textcoords="offset points",
                     ha="center", va="bottom", fontweight="bold")
 
-    ax.set_title("Catastrophic Forgetting Comparison (Lower is Better)", fontweight="bold", pad=12)
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_ylabel("Average Forgetting on Past Tasks (%)")
     ax.set_ylim(0, max(forgetting_vals + [10]) * 1.25)
     plt.xticks(rotation=15, ha="right")
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "catastrophic_forgetting.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 2: {save_path}")
@@ -129,20 +186,35 @@ def plot_catastrophic_forgetting(results_data: Dict[str, Any], save_path: Path =
 
 def plot_per_class_accuracy(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 3: Per-Class Accuracy after final task."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "per_class_accuracy.png"
+
     fig, ax = plt.subplots(figsize=(9.5, 5.5), dpi=300)
+    title = "Per-Class Accuracy After Task 3 (Final State)"
     methods = [m for m in ["naive", "ewc", "lwf", "replay", "replay_ewc", "joint"] if m in results_data]
     categories = CATEGORIES
+    valid_methods = []
+
+    for m in methods:
+        per_class = results_data[m].get("final_per_class", {})
+        if per_class and any(isinstance(v, (int, float)) for v in per_class.values()):
+            valid_methods.append(m)
+
+    if not valid_methods:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"No per-class metrics available. Rendered unavailable for Plot 3: {save_path}")
+        return
 
     x = np.arange(len(categories))
     width = 0.14
 
-    for idx, m in enumerate(methods):
+    for idx, m in enumerate(valid_methods):
         per_class = results_data[m].get("final_per_class", {})
         accs = [per_class.get(cat, 0.0) * 100 for cat in categories]
-        offset = (idx - len(methods) / 2 + 0.5) * width
+        offset = (idx - len(valid_methods) / 2 + 0.5) * width
         ax.bar(x + offset, accs, width, label=METHOD_LABELS.get(m, m), color=METHOD_COLORS.get(m, "#666666"))
 
-    ax.set_title("Per-Class Accuracy After Task 3 (Final State)", fontweight="bold", pad=12)
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_ylabel("Accuracy (%)")
     ax.set_xticks(x)
     ax.set_xticklabels(categories)
@@ -150,8 +222,6 @@ def plot_per_class_accuracy(results_data: Dict[str, Any], save_path: Path = None
     ax.legend(frameon=True, loc="lower right")
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "per_class_accuracy.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 3: {save_path}")
@@ -159,20 +229,36 @@ def plot_per_class_accuracy(results_data: Dict[str, Any], save_path: Path = None
 
 def plot_memory_vs_accuracy(memory_study_data: Dict[str, Any], save_path: Path = None):
     """Plot 4A: Memory Sensitivity (0, 50, 100, 200 memory budget) vs Overall Accuracy."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "memory_vs_accuracy.png"
+
     fig, ax = plt.subplots(figsize=(7.5, 5), dpi=300)
-    budgets = sorted([int(k) for k in memory_study_data.keys()])
+    title = "Memory Ablation: Replay Buffer Size vs Final Overall Accuracy"
+
+    if not memory_study_data:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Memory study data missing. Rendered unavailable for Plot 4A: {save_path}")
+        return
+
+    budgets = sorted([int(k) for k in memory_study_data.keys() if str(k).isdigit()])
     accuracies = []
     for b in budgets:
         val = memory_study_data[str(b)]
-        acc = val["final_accuracy"] if isinstance(val, dict) else val
-        accuracies.append(acc * 100)
+        acc = val.get("final_accuracy") if isinstance(val, dict) else val
+        if acc is not None and isinstance(acc, (int, float)):
+            accuracies.append(acc * 100)
+
+    if not accuracies or len(accuracies) != len(budgets):
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Memory accuracy points invalid. Rendered unavailable for Plot 4A: {save_path}")
+        return
 
     ax.plot(budgets, accuracies, marker="s", color="#1D3557", linewidth=2.5, markersize=8, label="Replay Accuracy")
     for b, acc in zip(budgets, accuracies):
         ax.annotate(f"{acc:.1f}%", xy=(b, acc), xytext=(0, 8), textcoords="offset points",
                     ha="center", fontweight="bold")
 
-    ax.set_title("Memory Ablation: Replay Buffer Size vs Final Overall Accuracy", fontweight="bold", pad=12)
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_xlabel("Replay Memory Budget (Number of Embeddings)")
     ax.set_ylabel("Final Overall Accuracy (%)")
     ax.set_xticks(budgets)
@@ -180,8 +266,6 @@ def plot_memory_vs_accuracy(memory_study_data: Dict[str, Any], save_path: Path =
     ax.grid(True, linestyle="--", alpha=0.6)
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "memory_vs_accuracy.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 4A: {save_path}")
@@ -189,20 +273,36 @@ def plot_memory_vs_accuracy(memory_study_data: Dict[str, Any], save_path: Path =
 
 def plot_memory_vs_forgetting(memory_study_data: Dict[str, Any], save_path: Path = None):
     """Plot 4B: Memory Sensitivity (0, 50, 100, 200 memory budget) vs Catastrophic Forgetting."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "memory_vs_forgetting.png"
+
     fig, ax = plt.subplots(figsize=(7.5, 5), dpi=300)
-    budgets = sorted([int(k) for k in memory_study_data.keys()])
+    title = "Memory Ablation: Replay Buffer Size vs Catastrophic Forgetting"
+
+    if not memory_study_data:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Memory study data missing. Rendered unavailable for Plot 4B: {save_path}")
+        return
+
+    budgets = sorted([int(k) for k in memory_study_data.keys() if str(k).isdigit()])
     forgettings = []
     for b in budgets:
         val = memory_study_data[str(b)]
-        f = val.get("forgetting", 0.0) if isinstance(val, dict) else 0.0
-        forgettings.append(f * 100)
+        f = val.get("forgetting") if isinstance(val, dict) else 0.0
+        if f is not None and isinstance(f, (int, float)):
+            forgettings.append(f * 100)
+
+    if not forgettings or len(forgettings) != len(budgets):
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Memory forgetting points invalid. Rendered unavailable for Plot 4B: {save_path}")
+        return
 
     ax.plot(budgets, forgettings, marker="o", color="#E63946", linewidth=2.5, markersize=8, label="Average Forgetting")
     for b, f in zip(budgets, forgettings):
         ax.annotate(f"{f:.1f}%", xy=(b, f), xytext=(0, 8), textcoords="offset points",
                     ha="center", fontweight="bold")
 
-    ax.set_title("Memory Ablation: Replay Buffer Size vs Catastrophic Forgetting", fontweight="bold", pad=12)
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_xlabel("Replay Memory Budget (Number of Embeddings)")
     ax.set_ylabel("Final Average Forgetting (%) [Lower is Better]")
     ax.set_xticks(budgets)
@@ -210,8 +310,6 @@ def plot_memory_vs_forgetting(memory_study_data: Dict[str, Any], save_path: Path
     ax.grid(True, linestyle="--", alpha=0.6)
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "memory_vs_forgetting.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 4B: {save_path}")
@@ -224,21 +322,28 @@ def plot_novelty_distribution(
     save_path: Path = None
 ):
     """Plot 5: Known Samples vs Unknown Samples Cosine Distance Distribution with Threshold."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "novelty_detection_distribution.png"
+
     fig, ax = plt.subplots(figsize=(8.5, 5), dpi=300)
+    title = "Novelty Detection: Semantic Distance Distribution to Known Centroids"
+
+    if known_distances is None or len(known_distances) == 0 or unknown_distances is None or len(unknown_distances) == 0:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Novelty distance data missing. Rendered unavailable for Plot 5: {save_path}")
+        return
 
     sns.kdeplot(known_distances, ax=ax, label="Known Category Samples", color="#2A9D8F", fill=True, alpha=0.35, linewidth=2)
     sns.kdeplot(unknown_distances, ax=ax, label="Novel / Unfamiliar Samples", color="#E63946", fill=True, alpha=0.35, linewidth=2)
 
     ax.axvline(threshold, color="#1D3557", linestyle="--", linewidth=2.2, label=f"Calibrated Threshold ($\\tau$ = {threshold:.3f})")
 
-    ax.set_title("Novelty Detection: Semantic Distance Distribution to Known Centroids", fontweight="bold", pad=12)
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_xlabel("Cosine Distance to Nearest Known Class Centroid")
     ax.set_ylabel("Density")
     ax.legend(frameon=True, loc="upper right")
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "novelty_detection_distribution.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 5: {save_path}")
@@ -246,8 +351,26 @@ def plot_novelty_distribution(
 
 def plot_knowledge_retention_heatmap(results_data: Dict[str, Any], save_path: Path = None):
     """Plot 6: Knowledge Retention Heatmap (Naive vs Replay + EWC) across Tasks 1, 2, and 3."""
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "knowledge_retention_heatmap.png"
+
+    # Defensive check: if task_history is missing from results_data, try loading task_history.json
+    if not any("task_history" in results_data.get(m, {}) for m in ["naive", "replay_ewc"]):
+        task_hist_file = RESULTS_METRICS_DIR / "task_history.json"
+        if task_hist_file.exists():
+            try:
+                with open(task_hist_file, "r") as f:
+                    th_data = json.load(f)
+                for m_k in ["naive", "replay_ewc"]:
+                    if m_k in th_data and m_k in results_data:
+                        results_data[m_k]["task_history"] = th_data[m_k]
+            except Exception as e:
+                logger.warning(f"Could not load task_history.json for heatmap: {e}")
+
     if "naive" not in results_data or "replay_ewc" not in results_data:
-        logger.warning("Cannot plot heatmap without naive and replay_ewc results.")
+        fig, ax = plt.subplots(figsize=(13, 5), dpi=300)
+        _render_unavailable(ax, fig, "Knowledge Retention Matrix Heatmap", save_path)
+        logger.warning("Cannot plot heatmap without naive and replay_ewc results. Rendered unavailable.")
         return
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5), dpi=300)
@@ -260,7 +383,7 @@ def plot_knowledge_retention_heatmap(results_data: Dict[str, Any], save_path: Pa
         for t_idx, h in enumerate(history):
             per_class = h.get("per_class_accuracy", {})
             for c_idx, c_name in enumerate(cats):
-                if c_name in per_class:
+                if c_name in per_class and per_class[c_name] is not None:
                     mat[t_idx, c_idx] = per_class[c_name] * 100
                 else:
                     mat[t_idx, c_idx] = np.nan
@@ -268,6 +391,11 @@ def plot_knowledge_retention_heatmap(results_data: Dict[str, Any], save_path: Pa
 
     naive_mat = extract_matrix("naive")
     prop_mat = extract_matrix("replay_ewc")
+
+    if np.isnan(naive_mat).all() or np.isnan(prop_mat).all():
+        _render_unavailable(ax1, fig, "Knowledge Retention Matrix Heatmap", save_path)
+        logger.warning(f"Heatmap matrices contain only NaNs. Rendered unavailable for Plot 6: {save_path}")
+        return
 
     sns.heatmap(naive_mat, annot=True, fmt=".1f", cmap="Reds_r", vmin=0, vmax=100,
                 xticklabels=cats, yticklabels=tasks, ax=ax1, cbar=False, linewidths=0.5)
@@ -280,8 +408,6 @@ def plot_knowledge_retention_heatmap(results_data: Dict[str, Any], save_path: Pa
     ax2.set_xticklabels(cats, rotation=25, ha="right")
 
     plt.tight_layout()
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "knowledge_retention_heatmap.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 6: {save_path}")
@@ -292,9 +418,26 @@ def plot_lwf_retention_analysis(results_data: Dict[str, Any], save_path: Path = 
     Plot 7: LwF Retention Analysis comparing Naive vs LwF vs Replay + EWC across Tasks 1, 2, and 3.
     Demonstrates the retention characteristics of knowledge distillation against baseline & replay.
     """
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "lwf_retention_analysis.png"
+
     fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+    title = "LwF Retention Analysis: Distillation vs Naive vs Replay + EWC"
     stages = ["Task 1\n(Books + Cloth)", "Task 2\n(+Electronics)", "Task 3\n(+Household)"]
     x = np.arange(len(stages))
+
+    # Defensive check: if task_history is missing from results_data, try loading task_history.json
+    if not any("task_history" in results_data.get(m, {}) for m in ["naive", "lwf", "replay_ewc"]):
+        task_hist_file = RESULTS_METRICS_DIR / "task_history.json"
+        if task_hist_file.exists():
+            try:
+                with open(task_hist_file, "r") as f:
+                    th_data = json.load(f)
+                for m_k in ["naive", "lwf", "replay_ewc"]:
+                    if m_k in th_data and m_k in results_data:
+                        results_data[m_k]["task_history"] = th_data[m_k]
+            except Exception as e:
+                logger.warning(f"Could not load task_history.json for LwF plot: {e}")
 
     methods_to_compare = [
         ("naive", "Naive Sequential", "#E63946", "o-"),
@@ -302,18 +445,29 @@ def plot_lwf_retention_analysis(results_data: Dict[str, Any], save_path: Path = 
         ("replay_ewc", "Replay + EWC (Proposed)", "#1D3557", "^-")
     ]
 
+    plotted_count = 0
     for m_key, m_label, color, fmt in methods_to_compare:
-        if m_key in results_data:
+        if m_key in results_data and isinstance(results_data[m_key], dict):
             hist = results_data[m_key].get("task_history", [])
-            accs = [h["overall_accuracy"] * 100 for h in hist]
+            accs = []
+            for h in hist:
+                val = h.get("overall_accuracy")
+                if val is not None and isinstance(val, (int, float)):
+                    accs.append(val * 100)
             if len(accs) == len(stages):
                 ax.plot(x, accs, fmt, color=color, linewidth=2.5, markersize=8, label=m_label)
                 for i, txt in enumerate(accs):
                     offset = 8 if m_key != "lwf" else -14
                     ax.annotate(f"{txt:.1f}%", (x[i], txt), textcoords="offset points", xytext=(0, offset),
                                 ha='center', fontweight="bold", fontsize=9, color=color)
+                plotted_count += 1
 
-    ax.set_title("LwF Retention Analysis: Distillation vs Naive vs Replay + EWC", fontweight="bold", pad=12)
+    if plotted_count == 0:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"No valid LwF comparison stages found. Rendered unavailable for Plot 7: {save_path}")
+        return
+
+    ax.set_title(title, fontweight="bold", pad=12)
     ax.set_xlabel("Continual Learning Stage")
     ax.set_ylabel("Overall Accuracy (%)")
     ax.set_xticks(x)
@@ -340,10 +494,15 @@ def plot_recency_bias_collapse(results_data: Dict[str, Any], save_path: Path = N
     achieved by Replay + EWC.
     """
     methods = [m for m in ["naive", "ewc", "lwf", "replay", "replay_ewc", "joint"] if m in results_data]
-    if not methods:
-        return
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "recency_bias_collapse.png"
 
     fig, ax = plt.subplots(figsize=(12, 6), dpi=300)
+    title = "Recency Bias Collapse: Test Prediction Distribution Across Continual Baselines"
+    if not methods:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"No methods found for recency bias plot. Rendered unavailable: {save_path}")
+        return
     
     cats = CATEGORIES
     cat_colors = ["#264653", "#2A9D8F", "#E76F51", "#E63946"]
@@ -405,16 +564,28 @@ def plot_recency_bias_collapse(results_data: Dict[str, Any], save_path: Path = N
 
 def plot_prediction_transition_matrix(transition_data: Dict[str, Any] = None, save_path: Path = None):
     """Plot 9: Sample-level prediction transition heatmap from Baseline to EvoRoute-BR."""
-    if transition_data is None:
-        if not PREDICTION_TRANSITION_MATRIX_PATH.exists():
-            logger.warning("Prediction transition matrix file not found. Skipping Plot 9.")
-            return
-        with open(PREDICTION_TRANSITION_MATRIX_PATH, "r") as f:
-            t_file = json.load(f)
-            transition_data = t_file.get("evoroute_br_calibrated", {})
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "prediction_transition_matrix.png"
 
-    counts_dict = transition_data.get("transition_matrix_counts", {})
+    fig, ax = plt.subplots(figsize=(8, 6.5), dpi=300)
+    title = "Prediction Transition Matrix: Baseline -> EvoRoute-BR (Calibrated)"
+
+    if transition_data is None:
+        if PREDICTION_TRANSITION_MATRIX_PATH.exists():
+            try:
+                with open(PREDICTION_TRANSITION_MATRIX_PATH, "r") as f:
+                    t_file = json.load(f)
+                    transition_data = t_file.get("evoroute_br_calibrated", {})
+            except Exception as e:
+                logger.warning(f"Error loading transition matrix: {e}")
+                transition_data = {}
+        else:
+            transition_data = {}
+
+    counts_dict = transition_data.get("transition_matrix_counts", {}) if isinstance(transition_data, dict) else {}
     if not counts_dict:
+        _render_unavailable(ax, fig, title, save_path)
+        logger.warning(f"Transition counts missing. Rendered unavailable for Plot 9: {save_path}")
         return
 
     matrix = np.zeros((4, 4), dtype=int)
@@ -423,7 +594,6 @@ def plot_prediction_transition_matrix(transition_data: Dict[str, Any] = None, sa
         for j, c_cat in enumerate(CATEGORIES):
             matrix[i, j] = counts_dict.get(r_cat, {}).get(c_cat, 0)
 
-    fig, ax = plt.subplots(figsize=(8, 6.5), dpi=300)
     sns.heatmap(
         matrix,
         annot=True,
@@ -444,8 +614,6 @@ def plot_prediction_transition_matrix(transition_data: Dict[str, Any] = None, sa
     ax.set_ylabel("Baseline (Replay + EWC) Predicted Category", fontweight="bold", labelpad=8)
     plt.tight_layout()
 
-    if save_path is None:
-        save_path = RESULTS_PLOTS_DIR / "prediction_transition_matrix.png"
     fig.savefig(save_path, bbox_inches="tight")
     plt.close(fig)
     logger.info(f"Saved Plot 9 (Prediction Transition Matrix): {save_path}")
@@ -458,8 +626,13 @@ def plot_confusion_matrix_comparison(save_path: Path = None):
     from src.config import BASELINE_CHECKPOINT_PATH, EVOROUTE_BR_CALIBRATED_CHECKPOINT_PATH, DEVICE
     from src.calibration import CalibratedModelWrapper
 
+    if save_path is None:
+        save_path = RESULTS_PLOTS_DIR / "confusion_matrix_comparison.png"
+
     if not BASELINE_CHECKPOINT_PATH.exists() or not EVOROUTE_BR_CALIBRATED_CHECKPOINT_PATH.exists():
-        logger.warning("Checkpoints missing for confusion matrix comparison.")
+        fig, ax = plt.subplots(figsize=(14, 5.8), dpi=300)
+        _render_unavailable(ax, fig, "Normalized Confusion Matrix Comparison", save_path)
+        logger.warning(f"Checkpoints missing for confusion matrix comparison. Rendered unavailable: {save_path}")
         return
 
     test_embs, test_lbls, _ = get_task_data(task_id=3, split="test", cumulative=True)
