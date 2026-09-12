@@ -133,6 +133,19 @@ class NoveltyDetector:
             "decision": "UNKNOWN / NOVEL CATEGORY" if is_novel else "KNOWN CATEGORY"
         }
 
+    def get_all_distances(self, embedding: torch.Tensor) -> Dict[str, float]:
+        """Returns distance from an embedding to every known class centroid."""
+        if not self.centroids:
+            return {}
+        if embedding.dim() == 1:
+            embedding = embedding.unsqueeze(0)
+        norm_e = F.normalize(embedding, p=2, dim=1)
+        distances = {}
+        for c, cent in self.centroids.items():
+            dist = float(1.0 - torch.sum(norm_e * cent).item())
+            distances[ID2CATEGORY.get(c, f"Class {c}")] = dist
+        return distances
+
     def evaluate_novelty(
         self,
         embeddings: torch.Tensor,

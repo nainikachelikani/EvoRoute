@@ -6,7 +6,7 @@ FINAL_RESULTS_PATH = ROOT / "results" / "metrics" / "final_results.json"
 MEMORY_PATH = ROOT / "results" / "metrics" / "memory_sensitivity.json"
 README_PATH = ROOT / "README.md"
 
-def audit_consistency():
+def test_consistency_audit():
     print("=================================================================")
     print("                 FINAL CONSISTENCY AUDIT                         ")
     print("=================================================================")
@@ -63,4 +63,4 @@ def audit_consistency():
     print("=================================================================")
 
 if __name__ == "__main__":
-    audit_consistency()
+    test_consistency_audit()

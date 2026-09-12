@@ -118,3 +118,7 @@ class EWC:
                     loss += (fish * (diff ** 2)).sum()
 
         return (self.ewc_lambda / 2.0) * loss
+
+    def compute_penalty(self, model: nn.Module) -> torch.Tensor:
+        """Alias for penalty(model)."""
+        return self.penalty(model)

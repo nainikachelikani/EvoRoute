@@ -32,8 +32,9 @@ def test_ewc_fisher_and_penalty():
     
     # Compute Fisher
     ewc.compute_fisher(loader, num_samples=100)
-    assert 1 in ewc.fisher_matrix
-    assert 1 in ewc.optimal_params
+    assert "head.weight" in ewc.fisher_matrix
+    assert "fc1.weight" in ewc.fisher_matrix
+    assert "head.weight" in ewc.reference_params
     
     # Check that penalty on identical parameters is 0
     pen_0 = ewc.compute_penalty(model).item()
