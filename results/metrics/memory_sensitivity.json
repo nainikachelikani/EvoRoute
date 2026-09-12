@@ -1,0 +1,18 @@
+{
+    "0": {
+        "final_accuracy": 0.25,
+        "forgetting": 0.995
+    },
+    "50": {
+        "final_accuracy": 0.51,
+        "forgetting": 0.6575
+    },
+    "100": {
+        "final_accuracy": 0.5825,
+        "forgetting": 0.5662499999999999
+    },
+    "200": {
+        "final_accuracy": 0.64625,
+        "forgetting": 0.4775
+    }
+}

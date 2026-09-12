@@ -1,0 +1,375 @@
+{
+    "naive": {
+        "method": "naive",
+        "overall_accuracy": 0.25,
+        "final_avg_task_accuracy": 0.3333333333333333,
+        "final_average_accuracy": 0.25,
+        "final_accuracy": 0.25,
+        "average_forgetting": 0.995,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.99,
+                "Task_2": 1.0
+            },
+            "average_forgetting": 0.995
+        },
+        "final_per_class": {
+            "Books": 0.0,
+            "Clothing & Accessories": 0.0,
+            "Electronics": 0.0,
+            "Household": 1.0
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.36333333333333334,
+                "per_class_accuracy": {
+                    "Books": 0.09,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.045,
+                    "Task_2": 1.0
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.25,
+                "per_class_accuracy": {
+                    "Books": 0.0,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 0.0,
+                    "Household": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0,
+                    "Task_2": 0.0,
+                    "Task_3": 1.0
+                },
+                "memory_size": 0
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.045,
+                1.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0
+            ]
+        ],
+        "memory_size": 0,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\naive_final.pt"
+    },
+    "replay": {
+        "method": "replay",
+        "overall_accuracy": 0.64625,
+        "final_avg_task_accuracy": 0.6716666666666667,
+        "final_average_accuracy": 0.64625,
+        "final_accuracy": 0.64625,
+        "average_forgetting": 0.4775,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.42000000000000004,
+                "Task_2": 0.5349999999999999
+            },
+            "average_forgetting": 0.4775
+        },
+        "final_per_class": {
+            "Books": 0.465,
+            "Clothing & Accessories": 0.675,
+            "Electronics": 0.46,
+            "Household": 0.985
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 200
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.8633333333333333,
+                "per_class_accuracy": {
+                    "Books": 0.69,
+                    "Clothing & Accessories": 0.905,
+                    "Electronics": 0.995
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.7975,
+                    "Task_2": 0.995
+                },
+                "memory_size": 198
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.64625,
+                "per_class_accuracy": {
+                    "Books": 0.465,
+                    "Clothing & Accessories": 0.675,
+                    "Electronics": 0.46,
+                    "Household": 0.985
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.57,
+                    "Task_2": 0.46,
+                    "Task_3": 0.985
+                },
+                "memory_size": 200
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.7975,
+                0.995,
+                0.0
+            ],
+            [
+                0.57,
+                0.46,
+                0.985
+            ]
+        ],
+        "memory_size": 200,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_final.pt"
+    },
+    "replay_ewc": {
+        "method": "replay_ewc",
+        "overall_accuracy": 0.65625,
+        "final_avg_task_accuracy": 0.68,
+        "final_average_accuracy": 0.65625,
+        "final_accuracy": 0.65625,
+        "average_forgetting": 0.465,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.405,
+                "Task_2": 0.525
+            },
+            "average_forgetting": 0.465
+        },
+        "final_per_class": {
+            "Books": 0.48,
+            "Clothing & Accessories": 0.69,
+            "Electronics": 0.47,
+            "Household": 0.985
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 200
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.8566666666666667,
+                "per_class_accuracy": {
+                    "Books": 0.675,
+                    "Clothing & Accessories": 0.9,
+                    "Electronics": 0.995
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.7875,
+                    "Task_2": 0.995
+                },
+                "memory_size": 198
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.65625,
+                "per_class_accuracy": {
+                    "Books": 0.48,
+                    "Clothing & Accessories": 0.69,
+                    "Electronics": 0.47,
+                    "Household": 0.985
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.585,
+                    "Task_2": 0.47,
+                    "Task_3": 0.985
+                },
+                "memory_size": 200
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.7875,
+                0.995,
+                0.0
+            ],
+            [
+                0.585,
+                0.47,
+                0.985
+            ]
+        ],
+        "memory_size": 200,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\replay_ewc_final.pt"
+    },
+    "ewc": {
+        "method": "ewc",
+        "overall_accuracy": 0.25,
+        "final_avg_task_accuracy": 0.3333333333333333,
+        "final_average_accuracy": 0.25,
+        "final_accuracy": 0.25,
+        "average_forgetting": 0.995,
+        "forgetting": {
+            "per_task_forgetting": {
+                "Task_1": 0.99,
+                "Task_2": 1.0
+            },
+            "average_forgetting": 0.995
+        },
+        "final_per_class": {
+            "Books": 0.0,
+            "Clothing & Accessories": 0.0,
+            "Electronics": 0.0,
+            "Household": 1.0
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.99,
+                "per_class_accuracy": {
+                    "Books": 0.99,
+                    "Clothing & Accessories": 0.99
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.99
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.34833333333333333,
+                "per_class_accuracy": {
+                    "Books": 0.045,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0225,
+                    "Task_2": 1.0
+                },
+                "memory_size": 0
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.25,
+                "per_class_accuracy": {
+                    "Books": 0.0,
+                    "Clothing & Accessories": 0.0,
+                    "Electronics": 0.0,
+                    "Household": 1.0
+                },
+                "seen_task_accuracies": {
+                    "Task_1": 0.0,
+                    "Task_2": 0.0,
+                    "Task_3": 1.0
+                },
+                "memory_size": 0
+            }
+        ],
+        "accuracy_matrix": [
+            [
+                0.99,
+                0.0,
+                0.0
+            ],
+            [
+                0.0225,
+                1.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0
+            ]
+        ],
+        "memory_size": 0,
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\ewc_final.pt"
+    },
+    "joint": {
+        "method": "joint",
+        "overall_accuracy": 0.9375,
+        "final_avg_task_accuracy": 0.9249999999999999,
+        "final_average_accuracy": 0.9375,
+        "final_accuracy": 0.9375,
+        "average_forgetting": 0.0,
+        "final_per_class": {
+            "Books": 0.97,
+            "Clothing & Accessories": 0.98,
+            "Electronics": 0.9,
+            "Household": 0.9
+        },
+        "task_history": [
+            {
+                "task_id": 1,
+                "overall_accuracy": 0.9375
+            },
+            {
+                "task_id": 2,
+                "overall_accuracy": 0.9375
+            },
+            {
+                "task_id": 3,
+                "overall_accuracy": 0.9375
+            }
+        ],
+        "forgetting": {
+            "average_forgetting": 0.0,
+            "per_task_forgetting": {
+                "Task_1": 0.0,
+                "Task_2": 0.0
+            }
+        },
+        "memory_size": "Full Dataset",
+        "model_path": "C:\\Users\\DELL\\OneDrive\\Desktop\\EvoRoute\\models\\joint_final.pt"
+    }
+}
